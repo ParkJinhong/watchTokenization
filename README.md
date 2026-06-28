@@ -1,5 +1,7 @@
 # Watch Tokenization — 시계 담보 대출 DeFi (라이트)
 
+[![CI](https://github.com/ParkJinhong/watchTokenization/actions/workflows/ci.yml/badge.svg)](https://github.com/ParkJinhong/watchTokenization/actions/workflows/ci.yml)
+
 실물 명품 시계를 **ERC-20으로 토큰화**하고, 그 토큰을 담보로 **USDC 대출 / 청산**을 제공하는 스마트컨트랙트 데모입니다. 시계 시세는 **Python 백엔드 오라클**이 온체인으로 푸시합니다.
 
 > 명품 시계 거래 인프라 → 디지털 자산화(토큰화)·담보 금융으로 확장하는 사업 흐름을 가정한 포트폴리오 프로젝트입니다.
