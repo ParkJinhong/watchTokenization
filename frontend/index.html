@@ -164,7 +164,8 @@
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
 <script src="contracts.js"></script>
 <script>
-const RPC = "http://127.0.0.1:8545";
+// http(s)로 서빙되면 같은 origin의 /rpc 프록시를 사용 (폰/터널 접속 가능), file://이면 로컬 노드 직결
+const RPC = location.protocol.startsWith("http") ? location.origin + "/rpc" : "http://127.0.0.1:8545";
 // Hardhat 기본 계정 (로컬 테스트 전용 공개 키)
 const ACCOUNTS = [
   { label: "회사(account0)", pk: "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80" },

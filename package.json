@@ -1,13 +1,12 @@
 {
   "name": "watch-tokenization",
   "version": "0.1.0",
-  "description": "실물 명품 시계를 ERC-20으로 토큰화하고 담보 대출/청산을 제공하는 DeFi 데모",
+  "description": "실물 명품 시계를 ERC-20으로 분할 토큰화하고, P2P 거래·대여수익 배당을 제공하는 dApp 데모",
   "license": "MIT",
   "scripts": {
     "compile": "hardhat compile",
     "test": "hardhat test",
     "node": "hardhat node",
-    "deploy:local": "hardhat run scripts/deploy.ts --network localhost",
     "deploy:app": "hardhat run scripts/deploy-app.ts --network localhost",
     "app": "node frontend/serve.mjs"
   },
