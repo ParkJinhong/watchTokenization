@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B. 대출 시장 — 구조도</title>
+<style>
+  :root{--ink:#1b2026; --muted:#5b6470; --line:#dde3e8; --bg:#eef1f4;
+    --loan:#3a5a98; --loan-bg:#eef2f9; --gold:#b3791a; --warn:#a63a2a; --ok:#2f7d4f;}
+  *{box-sizing:border-box}
+  body{font-family:"Malgun Gothic","맑은 고딕",-apple-system,"Segoe UI",sans-serif;
+    color:var(--ink); margin:0; background:var(--bg); padding:28px 14px; line-height:1.6}
+  .page{max-width:920px; margin:0 auto; background:#fff; border-radius:10px;
+    box-shadow:0 1px 6px rgba(0,0,0,.09); padding:36px 44px 32px}
+  header{border-bottom:3px solid var(--loan); padding-bottom:14px; margin-bottom:8px}
+  .kicker{font-size:12px; font-weight:800; color:var(--loan); letter-spacing:.5px}
+  h1{font-size:24px; margin:3px 0 5px}
+  .sub{color:var(--muted); font-size:13.5px}
+  h2{font-size:17px; margin:30px 0 12px; padding-bottom:6px; border-bottom:1px solid var(--line); color:var(--loan)}
+  p,li{font-size:14px} ul{padding-left:20px; margin:8px 0} li{margin:4px 0}
+
+  .flow{display:flex; flex-wrap:wrap; align-items:stretch; gap:0; margin:6px 0}
+  .step{flex:1 1 150px; min-width:150px; background:#fff; border:1.5px solid #bfcce4; border-radius:9px; padding:10px 12px}
+  .step .n{font-size:11px; font-weight:800; color:#fff; background:var(--loan); border-radius:50%;
+    width:19px; height:19px; display:inline-flex; align-items:center; justify-content:center; margin-bottom:5px}
+  .step b{display:block; font-size:13.5px} .step span{font-size:11.5px; color:var(--muted)}
+  .step.danger{border-color:var(--warn)} .step.danger .n{background:var(--warn)}
+  .arrow{display:flex; align-items:center; justify-content:center; flex:0 0 22px; color:#aeb6bf; font-size:18px; font-weight:700}
+
+  table{width:100%; border-collapse:collapse; margin:10px 0; font-size:13px}
+  th,td{border:1px solid var(--line); padding:8px 11px; text-align:left; vertical-align:top}
+  th{background:var(--loan-bg); color:var(--loan); font-weight:700}
+  .center{text-align:center}
+
+  .detail{border:1px solid var(--line); border-left:4px solid var(--loan); border-radius:6px;
+    padding:10px 14px; margin:10px 0; background:#fafbfe}
+  .detail b{color:var(--loan)}
+  .badge{font-size:10.5px; font-weight:700; color:#fff; background:var(--muted); padding:1px 7px; border-radius:7px; margin-left:6px}
+  .badge.on{background:var(--ok)} .badge.off{background:var(--loan)}
+
+  .example{background:var(--loan-bg); border:1px solid #d2dcec; border-radius:9px; padding:14px 18px; margin:12px 0}
+  .example h3{margin:0 0 8px; font-size:14px; color:var(--loan)}
+  .example table{margin:6px 0} .example th{background:#fff}
+
+  .timeline{list-style:none; padding-left:0; margin:8px 0}
+  .timeline li{position:relative; padding:6px 0 6px 26px; border-left:2px solid #cdd7ea; margin-left:6px}
+  .timeline li::before{content:""; position:absolute; left:-7px; top:11px; width:11px; height:11px;
+    border-radius:50%; background:var(--loan)}
+  .timeline li.hit::before{background:var(--warn)}
+  .timeline b{font-size:13.5px}
+
+  .revenue{display:inline-flex; align-items:center; gap:8px; background:#fff; border:1.5px solid var(--gold);
+    border-radius:9px; padding:8px 14px; font-size:13px}
+  .revenue .rk{font-weight:800; color:var(--gold)}
+  .warn{border-left-color:var(--warn)} .warn b{color:var(--warn)}
+
+  .nav{margin-top:26px; padding-top:14px; border-top:1px solid var(--line); font-size:12.5px}
+  .nav a{color:var(--loan); text-decoration:none; font-weight:700}
+  @media print{body{background:#fff; padding:0} .page{box-shadow:none; border-radius:0}}
+</style>
+</head>
+<body>
+<div class="page">
+<header>
+  <div class="kicker">B. 대출 시장</div>
+  <h1>시계를 담보로 — 대출 · 이자 · 청산</h1>
+  <div class="sub">시계(또는 시계 토큰)를 담보로 현금을 빌려주고, 가격이 일정 수준 이하로 떨어지면 청산해 원금을 보호한다.</div>
+</header>
+
+<h2>1. 핵심 흐름</h2>
+<div class="flow">
+  <div class="step"><span class="n">1</span><b>담보 예치</b><span>시계(토큰) 담보 제공</span></div>
+  <div class="arrow">→</div>
+  <div class="step"><span class="n">2</span><b>감정가 산정</b><span>오라클 시세 제공</span></div>
+  <div class="arrow">→</div>
+  <div class="step"><span class="n">3</span><b>대출 실행</b><span>감정가의 50%(LTV)</span></div>
+  <div class="arrow">→</div>
+  <div class="step"><span class="n">4</span><b>이자 발생</b><span>연 5%</span></div>
+</div>
+<div class="flow" style="margin-top:10px">
+  <div class="step"><span class="n">5</span><b>시세 모니터링</b><span>오라클이 시세 지속 추적</span></div>
+  <div class="arrow">→</div>
+  <div class="step danger"><span class="n">6</span><b>청산</b><span>50% 이하 하락 시 청산자가 부채 상환 → 담보 인수</span></div>
+</div>
+
+<h2>2. 단계별 상세</h2>
+
+<div class="detail">
+  <b>① 담보 예치</b><span class="badge on">온체인</span>
+  <p style="margin:6px 0">대출자가 보유한 시계(또는 시계 토큰)를 금고 컨트랙트에 담보로 잠근다. 담보가 잠긴 동안에는 전송 불가.</p>
+</div>
+
+<div class="detail">
+  <b>② 감정가 산정 — 시세는 어디서 오나</b><span class="badge off">오프체인 → 온체인</span>
+  <ul>
+    <li>실물 시계의 시세는 <b>오프체인</b>에서 형성된다(거래·감정 데이터).</li>
+    <li>백엔드 오라클이 이 감정가를 <b>온체인 컨트랙트로 푸시</b>하고, 일정 시간 지난 시세(stale)는 거부한다.</li>
+    <li>→ 오라클이 곧 대출/청산의 신뢰 원천. 시세 조작·지연은 핵심 리스크.</li>
+  </ul>
+</div>
+
+<div class="detail">
+  <b>③ 대출 실행 — 왜 50%인가 (LTV)</b><span class="badge on">온체인</span>
+  <ul>
+    <li>담보 평가액의 <b>최대 50%</b>까지 현금(스테이블코인)을 대출 → 가격 변동 완충 장치.</li>
+    <li>절반의 여유(buffer)가 있어, 시세가 떨어져도 즉시 부실로 가지 않는다.</li>
+  </ul>
+</div>
+
+<div class="detail">
+  <b>④ 이자 — 회사의 수익</b><span class="badge on">온체인</span>
+  <p style="margin:6px 0">대출 기간에 비례해 <b>연 5%</b> 이자가 누적된다. 상환 시 이자부터 차감 후 원금 상환.</p>
+</div>
+
+<div class="detail warn">
+  <b>⑤·⑥ 시세 하락과 청산</b><span class="badge on">온체인</span>
+  <ul>
+    <li>오라클 시세가 떨어져 <b>담보 평가액 ≤ 부채</b>(= 가격이 대출시점의 50% 이하)가 되면 청산 대상.</li>
+    <li><b>청산자</b>(누구나)가 대출자의 부채를 대신 갚고 담보(시계 토큰)를 인수한다.</li>
+    <li>회사/대출 풀은 원금을 회수하고, 청산자는 인수한 담보로 차익을 노린다.</li>
+  </ul>
+</div>
+
+<h2>3. 청산 메커니즘 — 왜 이렇게 설계하나</h2>
+<table>
+  <tr><th>요소</th><th>설계</th><th>이유</th></tr>
+  <tr><td>대출 한도 (LTV)</td><td>50%</td><td>가격 하락 완충 → 부실 확률 ↓</td></tr>
+  <tr><td>청산 트리거</td><td>담보가치 ≤ 부채</td><td>대출금 미회수 위험을 막는 지점</td></tr>
+  <tr><td>청산 주체</td><td>누구나(청산자)</td><td>탈중앙 인센티브로 신속 처리</td></tr>
+  <tr><td>시세 출처</td><td>오라클(stale 차단)</td><td>잘못된 시세로 부당 청산 방지</td></tr>
+</table>
+
+<h2>4. 예시 시나리오</h2>
+<div class="example">
+  <h3>감정가 1억 원 시계를 담보로 대출</h3>
+  <table>
+    <tr><th>담보</th><td>감정가 1억 원 시계(토큰)</td></tr>
+    <tr><th>대출</th><td>최대 <b>5,000만 원</b>(LTV 50%) 대출</td></tr>
+    <tr><th>이자</th><td>연 5% → 연 <b>250만 원</b> 이자</td></tr>
+    <tr><th>청산선</th><td>감정가가 <b>5,000만 원(50%) 이하</b>로 하락하면 청산</td></tr>
+  </table>
+  <ul class="timeline">
+    <li><b>0개월</b> — 담보 예치, 5,000만 원 대출 (건전)</li>
+    <li><b>3개월</b> — 시세 9,000만 원으로 하락, 아직 안전(부채 5,000만 < 담보 9,000만)</li>
+    <li class="hit"><b>X시점</b> — 시세 4,900만 원으로 급락 → 담보 ≤ 부채 → <b>청산 발생</b></li>
+  </ul>
+</div>
+
+<h2>5. 회사 수익 모델</h2>
+<div class="revenue"><span class="rk">회사 수익</span> 대출금에 대한 연 5% 이자</div>
+
+<h2>6. 관련 컴포넌트</h2>
+<table>
+  <tr><th>컴포넌트</th><th>역할</th><th>위치</th></tr>
+  <tr><td>WatchVault</td><td>담보 예치·대출·이자·청산 로직</td><td class="center">온체인</td></tr>
+  <tr><td>PriceOracle</td><td>감정가 저장 + 만료(stale) 검증</td><td class="center">온체인</td></tr>
+  <tr><td>오라클 푸시 서비스</td><td>오프체인 시세를 온체인으로 전송</td><td class="center">오프체인</td></tr>
+  <tr><td>스테이블코인(USDC)</td><td>대출·상환 정산 통화</td><td class="center">온체인</td></tr>
+</table>
+
+<h2>7. 리스크 포인트</h2>
+<div class="detail warn">
+  <b>오라클 · 실물 처분</b> — 시세 조작/지연 시 부당 대출·청산이 발생할 수 있다. 또한 온체인 청산은 토큰을 회수할 뿐,
+  실제 가치 실현을 위해선 <b>실물 시계의 오프체인 매각</b>이 필요해 정합성 설계가 요구된다.
+  대출업 자체도 <b>대부업법·온투법</b> 인가 이슈가 있다. (상세: 기획·리스크 문서 3장)
+</div>
+
+<div class="nav"><a href="구조도_토큰화시장.html">A. 토큰화 시장 구조도</a> → &nbsp;·&nbsp; <a href="시계토큰화_기획_리스크.html">전체 기획·리스크 문서</a></div>
+
+</div>
+</body>
+</html>

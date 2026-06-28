@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A. 토큰화 시장 — 구조도</title>
+<style>
+  :root{--ink:#1b2026; --muted:#5b6470; --line:#dde3e8; --bg:#eef1f4;
+    --tok:#15616d; --tok-bg:#eef6f7; --gold:#b3791a; --warn:#a63a2a; --ok:#2f7d4f;}
+  *{box-sizing:border-box}
+  body{font-family:"Malgun Gothic","맑은 고딕",-apple-system,"Segoe UI",sans-serif;
+    color:var(--ink); margin:0; background:var(--bg); padding:28px 14px; line-height:1.6}
+  .page{max-width:920px; margin:0 auto; background:#fff; border-radius:10px;
+    box-shadow:0 1px 6px rgba(0,0,0,.09); padding:36px 44px 32px}
+  header{border-bottom:3px solid var(--tok); padding-bottom:14px; margin-bottom:8px}
+  .kicker{font-size:12px; font-weight:800; color:var(--tok); letter-spacing:.5px}
+  h1{font-size:24px; margin:3px 0 5px}
+  .sub{color:var(--muted); font-size:13.5px}
+  h2{font-size:17px; margin:30px 0 12px; padding-bottom:6px; border-bottom:1px solid var(--line); color:var(--tok)}
+  p,li{font-size:14px} ul{padding-left:20px; margin:8px 0} li{margin:4px 0}
+
+  .flow{display:flex; flex-wrap:wrap; align-items:stretch; gap:0; margin:6px 0}
+  .step{flex:1 1 150px; min-width:150px; background:#fff; border:1.5px solid #b9d4d7; border-radius:9px; padding:10px 12px}
+  .step .n{font-size:11px; font-weight:800; color:#fff; background:var(--tok); border-radius:50%;
+    width:19px; height:19px; display:inline-flex; align-items:center; justify-content:center; margin-bottom:5px}
+  .step b{display:block; font-size:13.5px} .step span{font-size:11.5px; color:var(--muted)}
+  .arrow{display:flex; align-items:center; justify-content:center; flex:0 0 22px; color:#aeb6bf; font-size:18px; font-weight:700}
+
+  table{width:100%; border-collapse:collapse; margin:10px 0; font-size:13px}
+  th,td{border:1px solid var(--line); padding:8px 11px; text-align:left; vertical-align:top}
+  th{background:var(--tok-bg); color:var(--tok); font-weight:700}
+  .center{text-align:center}
+
+  .detail{border:1px solid var(--line); border-left:4px solid var(--tok); border-radius:6px;
+    padding:10px 14px; margin:10px 0; background:#fafdfd}
+  .detail b{color:var(--tok)}
+  .badge{font-size:10.5px; font-weight:700; color:#fff; background:var(--muted); padding:1px 7px; border-radius:7px; margin-left:6px}
+  .badge.on{background:var(--ok)} .badge.off{background:var(--tok)}
+
+  .example{background:var(--tok-bg); border:1px solid #cfe2e4; border-radius:9px; padding:14px 18px; margin:12px 0}
+  .example h3{margin:0 0 8px; font-size:14px; color:var(--tok)}
+  .example table{margin:6px 0}
+  .example th{background:#fff}
+
+  .revenue{display:inline-flex; align-items:center; gap:8px; background:#fff; border:1.5px solid var(--gold);
+    border-radius:9px; padding:8px 14px; font-size:13px}
+  .revenue .rk{font-weight:800; color:var(--gold)}
+  .warn{border-left-color:var(--warn)} .warn b{color:var(--warn)}
+
+  .nav{margin-top:26px; padding-top:14px; border-top:1px solid var(--line); font-size:12.5px}
+  .nav a{color:var(--tok); text-decoration:none; font-weight:700}
+  @media print{body{background:#fff; padding:0} .page{box-shadow:none; border-radius:0}}
+</style>
+</head>
+<body>
+<div class="page">
+<header>
+  <div class="kicker">A. 토큰화 시장</div>
+  <h1>시계를 분할 토큰으로 — 발행 · 투자 · 수익 배분</h1>
+  <div class="sub">고가의 명품 시계를 여러 조각(토큰)으로 나눠 누구나 소액으로 투자하고, 대여·거래로 수익을 만든다.</div>
+</header>
+
+<h2>1. 핵심 흐름</h2>
+<div class="flow">
+  <div class="step"><span class="n">1</span><b>시계 공급</b><span>보유분 / 자금 모집 구입·중개</span></div>
+  <div class="arrow">→</div>
+  <div class="step"><span class="n">2</span><b>감정·등급</b><span>컨디션 → S·A·B·C</span></div>
+  <div class="arrow">→</div>
+  <div class="step"><span class="n">3</span><b>토큰 발행</b><span>1점 = 분할 지분 토큰</span></div>
+  <div class="arrow">→</div>
+  <div class="step"><span class="n">4</span><b>투자자 매수</b><span>소액 분할 투자</span></div>
+  <div class="arrow">→</div>
+  <div class="step"><span class="n">5</span><b>거래·수익</b><span>2차 거래 / 대여 배분</span></div>
+</div>
+
+<h2>2. 단계별 상세</h2>
+
+<div class="detail">
+  <b>① 시계 공급 — 어떻게 물량을 확보하나</b><span class="badge off">오프체인</span>
+  <ul>
+    <li><b>회사 보유 재고</b>: 시계거래소가 이미 보유한 시계를 토큰화</li>
+    <li><b>자금 모집 후 구입</b>: 투자자 자금을 먼저 모아 시장에서 시계 매입</li>
+    <li><b>토큰화 희망자 중개</b>: 개인이 맡긴 시계를 토큰화해 주고 수수료 수취</li>
+  </ul>
+</div>
+
+<div class="detail">
+  <b>② 감정·등급 — 같은 모델도 컨디션이 다르다</b><span class="badge off">오프체인</span>
+  <p style="margin:6px 0">전문 감정으로 컨디션을 4등급으로 표준화하여 토큰 가격의 기준을 만든다.</p>
+  <table>
+    <tr><th class="center">등급</th><th>기준(예시)</th><th>비고</th></tr>
+    <tr><td class="center"><b>S</b></td><td>미사용/풀세트, 흠집 없음</td><td>프리미엄 가격</td></tr>
+    <tr><td class="center"><b>A</b></td><td>경미한 사용감, 정품 보증서 보유</td><td>표준</td></tr>
+    <tr><td class="center"><b>B</b></td><td>사용감 뚜렷, 일부 부품 교체</td><td>할인</td></tr>
+    <tr><td class="center"><b>C</b></td><td>외관 손상/수리 이력</td><td>큰 할인</td></tr>
+  </table>
+</div>
+
+<div class="detail">
+  <b>③ 토큰 발행 — 1점을 1,000조각으로</b><span class="badge on">온체인</span>
+  <ul>
+    <li>시계 1점 = <b>분할 지분 토큰</b>(ERC-20)으로 발행. 총발행량이 곧 100% 지분</li>
+    <li>등급·식별자(감정서 번호)를 토큰에 기록 → 어떤 실물에 연결되는지 추적 가능</li>
+    <li>증권형으로 분류되면 전송 제한이 가능한 표준(ERC-3643)으로 확장</li>
+  </ul>
+</div>
+
+<div class="detail">
+  <b>④ 투자자 매수 — 왜 토큰을 사나</b>
+  <ul>
+    <li><b>분할 접근성</b>: 통째로 못 사는 고가 시계를 소액으로 일부 보유</li>
+    <li><b>투자(시세 차익)</b>: 시계 가치 상승 시 토큰 가격도 상승 기대</li>
+    <li><b>대여 수익</b>: 보유만으로 대여 수익을 정기 배분받음</li>
+  </ul>
+</div>
+
+<div class="detail">
+  <b>⑤ 거래·수익 — 두 갈래</b><span class="badge on">온체인</span>
+  <ul>
+    <li><b>2차 거래</b>: DeFi AMM 또는 P2P 거래소에서 토큰을 사고팖 (증권형이면 인가 거래소만)</li>
+    <li><b>대여 수익 배분</b>: 시계를 대여하고 발생한 수익을 토큰 보유 비율대로 분배(claim 방식)</li>
+  </ul>
+</div>
+
+<h2>3. 수익 배분 구조</h2>
+<p>대여 수익은 보유자가 많을수록 일일이 보내기 비효율적이므로, <b>각자 직접 청구(pull-claim)</b>하는 방식이 적합하다.</p>
+<table>
+  <tr><th>구분</th><th>내용</th></tr>
+  <tr><td>수익 원천</td><td>시계 대여료 (오프체인 발생 → 정산 통화로 컨트랙트에 입금)</td></tr>
+  <tr><td>배분 기준</td><td>특정 시점 토큰 보유량 스냅샷 비례</td></tr>
+  <tr><td>수령 방식</td><td>보유자가 원할 때 자신의 몫을 청구(claim)</td></tr>
+</table>
+
+<h2>4. 예시 시나리오</h2>
+<div class="example">
+  <h3>롤렉스 서브마리너 (감정가 1억 원, S등급)</h3>
+  <table>
+    <tr><th>발행</th><td>1,000 토큰 발행 → <b>1토큰 = 10만 원</b></td></tr>
+    <tr><th>투자</th><td>100만 원 투자 시 10토큰 = 시계 지분 1%</td></tr>
+    <tr><th>대여 수익</th><td>연 대여수익 600만 원 → 토큰당 6,000원 배분 (<b>연 6% 수익률</b>)</td></tr>
+    <tr><th>시세 차익</th><td>시계 감정가 1.2억으로 상승 시 → 1토큰 12만 원 (+20%)</td></tr>
+  </table>
+</div>
+
+<h2>5. 회사 수익 모델</h2>
+<div class="revenue"><span class="rk">회사 수익</span> 거래 수수료(매매 시) + 대여 수수료(대여 수익의 일정 %)</div>
+
+<h2>6. 관련 컴포넌트</h2>
+<table>
+  <tr><th>컴포넌트</th><th>역할</th><th>위치</th></tr>
+  <tr><td>WatchToken</td><td>시계 분할 지분 토큰(등급·식별자 기록)</td><td class="center">온체인</td></tr>
+  <tr><td>RevenueDistributor</td><td>대여 수익 스냅샷·청구 분배</td><td class="center">온체인</td></tr>
+  <tr><td>거래소(AMM/P2P)</td><td>토큰 2차 거래</td><td class="center">온체인</td></tr>
+  <tr><td>감정·등급 엔진</td><td>컨디션 평가, 가격 산정</td><td class="center">오프체인</td></tr>
+</table>
+
+<h2>7. 리스크 포인트</h2>
+<div class="detail warn">
+  <b>증권성</b> — "대여 수익 배분 + 투자 유인"은 한국 자본시장법상 <b>투자계약증권</b>으로 볼 가능성이 크다.
+  이 경우 발행·유통에 인가가 필요하고, 퍼미션리스 거래소 자유 거래가 제한된다. (상세: 기획·리스크 문서 3장)
+</div>
+
+<div class="nav">← <a href="구조도_대출시장.html">B. 대출 시장 구조도</a> &nbsp;·&nbsp; <a href="시계토큰화_기획_리스크.html">전체 기획·리스크 문서</a></div>
+
+</div>
+</body>
+</html>
