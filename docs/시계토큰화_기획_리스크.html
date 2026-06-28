@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>시계 토큰화 플랫폼 — 서비스 구조 &amp; 리스크 분석</title>
+<style>
+  :root{
+    --ink:#1a1a1a; --muted:#5b6470; --line:#e2e6ea; --soft:#f6f8fa;
+    --accent:#15616d; --warn:#b3471a; --ok:#2f7d4f;
+  }
+  *{box-sizing:border-box}
+  body{
+    font-family:"Malgun Gothic","맑은 고딕",-apple-system,"Segoe UI",sans-serif;
+    color:var(--ink); line-height:1.65; margin:0;
+    background:#eef1f4; padding:32px 16px;
+  }
+  .page{
+    max-width:880px; margin:0 auto; background:#fff;
+    padding:48px 56px; border-radius:8px;
+    box-shadow:0 1px 4px rgba(0,0,0,.08);
+  }
+  header{border-bottom:3px solid var(--accent); padding-bottom:18px; margin-bottom:28px}
+  h1{font-size:25px; margin:0 0 6px}
+  .sub{color:var(--muted); font-size:14px}
+  .lead{
+    background:var(--soft); border-left:4px solid var(--accent);
+    padding:12px 16px; border-radius:4px; margin:18px 0 0; font-size:14.5px;
+  }
+  h2{
+    font-size:18px; margin:34px 0 12px; padding-bottom:6px;
+    border-bottom:1px solid var(--line);
+  }
+  h3{font-size:15px; margin:20px 0 8px; color:var(--accent)}
+  p,li{font-size:14px}
+  table{width:100%; border-collapse:collapse; margin:10px 0; font-size:13.5px}
+  th,td{border:1px solid var(--line); padding:8px 11px; text-align:left; vertical-align:top}
+  th{background:var(--soft); width:150px; white-space:nowrap; color:var(--muted); font-weight:600}
+  thead th{width:auto; color:var(--ink)}
+  pre{
+    background:#0f1b1e; color:#d7e3e6; padding:16px; border-radius:6px;
+    font-size:12.5px; line-height:1.5; overflow-x:auto;
+    font-family:"Consolas","D2Coding",monospace;
+  }
+  .tag{display:inline-block; font-size:11px; font-weight:700; padding:2px 8px; border-radius:10px; vertical-align:middle}
+  .tag-warn{background:#fbe9e1; color:var(--warn)}
+  .tag-ok{background:#e3f3ea; color:var(--ok)}
+  .tag-key{background:#e1eef0; color:var(--accent)}
+  .callout{
+    border:1px solid var(--line); border-left:4px solid var(--warn);
+    background:#fffaf7; padding:12px 16px; border-radius:4px; margin:14px 0; font-size:13.5px;
+  }
+  .callout.key{border-left-color:var(--accent); background:#f4f9fa}
+  ul{margin:8px 0; padding-left:20px}
+  li{margin:3px 0}
+  .refs{font-size:12px; color:var(--muted)}
+  .refs a{color:var(--accent)}
+  footer{margin-top:36px; padding-top:14px; border-top:1px solid var(--line); font-size:12px; color:var(--muted)}
+  @media print{
+    body{background:#fff; padding:0}
+    .page{box-shadow:none; max-width:none; padding:0 8mm; border-radius:0}
+    h2{page-break-after:avoid}
+    table,pre,.callout{page-break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <h1>시계 토큰화 플랫폼 — 서비스 구조 &amp; 리스크 분석</h1>
+  <div class="sub">명품 시계 분할 토큰화 · 담보 대출 · 디지털 자산 거래 &nbsp;|&nbsp; 포트폴리오 기획 문서</div>
+  <div class="lead">
+    명품 시계를 <b>ERC-20으로 분할 토큰화</b>하여 누구나 소액으로 시계 자산에 투자·거래하고,
+    시계를 담보로 대출받을 수 있게 하는 디지털 자산 플랫폼.
+    <b>기술 구현 가능성</b>과 함께 <b>증권 규제 리스크</b> 및 <b>두바이(VARA) 법인 시나리오</b>를 정리한다.
+  </div>
+</header>
+
+<h2>1. 서비스 구조</h2>
+
+<h3>A. 토큰화 시장</h3>
+<table>
+  <tr><th>시계 공급</th><td>① 회사 보유 시계를 토큰화 &nbsp; ② 토큰화로 모은 자금으로 시계 구입 — 일반 매입 또는 <b>토큰화 희망자와 중개</b></td></tr>
+  <tr><th>토큰화 기준</th><td>동일 모델도 컨디션 체크 후 <b>S / A / B / C</b> 등급으로 구분하여 토큰화</td></tr>
+  <tr><th>구매 유인</th><td>① 통째로 못 사는 고가 시계를 <b>소액 분할 매수</b> &nbsp; ② <b>투자</b>(가격 상승 기대) &nbsp; ③ 시계 <b>대여 수익 배분</b></td></tr>
+  <tr><th>거래 장소</th><td>① 유니스왑형 <b>DeFi AMM</b> &nbsp; ② 자체 <b>P2P 거래소</b></td></tr>
+  <tr><th>회사 수익</th><td><b>거래 수수료 + 대여 수수료</b></td></tr>
+</table>
+
+<h3>B. 대출 시장</h3>
+<table>
+  <tr><th>상품</th><td>시계를 담보로 <b>현재가의 최대 50%(LTV)</b> 현금 대출</td></tr>
+  <tr><th>청산</th><td>시계 가격이 <b>대출 시점의 50% 이하</b>로 하락하면 청산</td></tr>
+  <tr><th>회사 수익</th><td>대출 금액에 대한 <b>연 5% 이자</b></td></tr>
+</table>
+
+<h2>2. 시스템 구조 <span class="tag tag-ok">구현 완료</span></h2>
+<pre>[Python 오라클] --감정가 push--> [PriceOracle] --시세 / stale 검증--> [WatchVault]
+                                                                       |  50% LTV 대출 · 청산
+                                                   [WatchToken(ERC-20)]┘  [MockUSDC]</pre>
+<ul>
+  <li><b>WatchToken</b> — 시계 1점 = 분할 지분 ERC-20 (등급 S/A/B/C 기록)</li>
+  <li><b>PriceOracle</b> — 오프체인 감정가를 온체인에 푸시, 만료(stale) 시세 차단</li>
+  <li><b>WatchVault</b> — 담보 예치 · 대출 · 이자 · 청산 로직 (ReentrancyGuard, SafeERC20)</li>
+  <li><b>oracle.py</b> — 시세를 주기적으로 푸시하는 Python 백엔드 (web3.py)</li>
+</ul>
+
+<h2>3. 리스크 — 한국 규제</h2>
+
+<h3>3-1. 증권성 <span class="tag tag-warn">핵심</span></h3>
+<div class="callout key">
+  <b>결론:</b> 본 토큰은 한국 자본시장법상 <b>「투자계약증권」에 해당할 가능성이 매우 높다.</b>
+</div>
+<ul>
+  <li>증권선물위원회는 2022년 <b>뮤직카우</b>(음악 저작권료 참여청구권)를 <b>투자계약증권 첫 인정</b> 사례로 판단.</li>
+  <li>금융위 <b>「조각투자 등 신종증권 가이드라인」(2022.4)</b> 의 증권성 인정 기준:
+    <ul>
+      <li>사업자 없이는 수익 배분·손실 회피가 어려운 경우</li>
+      <li>사업자가 운영하는 <b>유통시장의 성패</b>가 수익에 큰 영향을 주는 경우</li>
+      <li>사업자의 노력으로 <b>가격 상승을 기대</b>하게 하는 경우</li>
+    </ul>
+  </li>
+  <li>본 모델은 <b>대여 수익 배분</b>과 <b>투자(가격 상승) 유인</b>이 핵심 → <i>투자자 수익이 회사의 운영·노력에 의존</i> → <b>증권성 강함.</b></li>
+  <li>반대로 <i>소유권을 직접 분할하고 개별적으로 사용·수익·처분이 가능</i>하면 증권성이 낮아지나, 대여 수익 모델과 양립하기 어렵다.</li>
+</ul>
+
+<h3>3-2. 유통 규제 — DeFi/P2P 거래소와 정면 충돌 <span class="tag tag-warn">핵심</span></h3>
+<ul>
+  <li>토큰증권은 <b>인가받은 중개업자·제도권 장외시장</b>을 통해서만 유통 가능.</li>
+  <li>따라서 <b>유니스왑형 퍼미션리스 AMM, 무인가 자체 P2P 거래소에서의 자유 거래는 현행법상 불가.</b></li>
+</ul>
+
+<h3>3-3. 제도화 현황 <span class="tag tag-key">시점 의존</span></h3>
+<ul>
+  <li>토큰증권 <b>전자증권법·자본시장법 개정안이 2026년 1월 국회 본회의 통과.</b></li>
+  <li><b>공포 1년 후(2027년 1월 전후 잠정) 시행 예정</b> → 그 전까지는 <b>규제 샌드박스(혁신금융서비스)</b> 지정으로만 사업 가능.</li>
+</ul>
+
+<h3>3-4. 그 외</h3>
+<ul>
+  <li><b>대출 시장:</b> 회사 자금으로 이자 수취 시 <b>대부업법</b> 등록 / 투자자 자금 연계 시 <b>온투법</b> 인가.</li>
+  <li><b>실물(RWA) 리스크:</b> 보관·진위 보증, <b>감정가 신뢰</b>(오라클 조작·오류 시 부당 청산), 온체인 청산 ↔ 실물 매각 미스매치.</li>
+  <li><b>가상자산법 vs 증권:</b> 증권이면 「가상자산이용자보호법」 적용 대상에서 제외(증권 규제 우선).</li>
+  <li>AML/KYC, 투자 한도, 과세, 스테이블코인 결제 시 외환·지급결제 이슈.</li>
+</ul>
+
+<h2>4. 두바이(VARA) 법인 시나리오</h2>
+<div class="callout key">
+  UAE는 <b>실물자산 토큰화에 가장 정비된 다중 규제 프레임워크</b>를 갖춘다. 한국이 아직 STO 제도 시행 전인 것과 달리,
+  두바이 VARA는 <b>실물 담보 토큰 전용 카테고리(ARVA)</b>를 이미 가동 중이다.
+</div>
+
+<h3>4-1. 적용 제도 — ARVA</h3>
+<ul>
+  <li><b>VARA(두바이)</b>는 2025년 5월 <b>ARVA(Asset-Referenced Virtual Asset)</b> 카테고리를 도입 — 실물자산 기반 토큰의 전용 규제 틀. <b>실물 시계 담보 토큰이 정확히 여기에 해당.</b></li>
+  <li>발행자는 <b>Category 1 VA 발행 라이선스</b> 취득 + 개별 토큰마다 VARA 사전 승인 필요.</li>
+  <li>2026년 4월 가이던스: <b>직접 소유형(direct-ownership) ARVA는 별도 준비자산(Reserve) 불요</b> — 가격을 페그하는 stable-value 토큰만 준비자산 의무. (시계 분할 토큰은 직접 소유형 → 유리)</li>
+  <li>다층 규제: <b>ADGM FSRA</b>(2018~ 디지털 증권), <b>DIFC DFSA</b>(토큰화 샌드박스), 연방 <b>CMA</b>(중개·거래소)·<b>CBUAE</b>(지급토큰)로 발행~유통 전 주기 커버.</li>
+  <li>선례: 2025년 5월 <b>DLD Prypco Mint</b> — 등기권원 기반 부동산 분할 토큰, 중동 최초 사례(VARA·CBUAE 협업).</li>
+</ul>
+
+<h3>4-2. 비용·요건 (개략)</h3>
+<table>
+  <tr><th>최소 자본금</th><td>AED 150만 또는 24개월 평균 준비자산의 2% 중 큰 금액</td></tr>
+  <tr><th>라이선스 비용</th><td>신청 AED 10만 + 연간 감독 AED 20만</td></tr>
+  <tr><th>필수 요건</th><td>두바이 내 <b>실제 사업장(physical presence)</b>, 컴플라이언스 조직, AML/KYC 체계</td></tr>
+</table>
+
+<h3>4-3. 방향성 — 무엇이 풀리고, 무엇이 남는가</h3>
+<ul>
+  <li><span class="tag tag-ok">유리</span> 실물 담보 분할 토큰을 <b>합법적으로 발행</b>할 전용 제도가 존재. 한국식 "증권이라 발행 자체가 막힘" 문제를 우회 가능.</li>
+  <li><span class="tag tag-ok">유리</span> VARA 라이선스 거래소를 통한 <b>2차 유통이 제도권에서 가능</b>.</li>
+  <li><span class="tag tag-warn">잔존</span> <b>퍼미션리스 DEX(유니스왑)는 여전히 불가</b> — 유통은 VARA 인가 VASP를 통해야 함. "온체인 자유 거래"의 꿈은 제한됨.</li>
+  <li><span class="tag tag-warn">잔존</span> <b>대여 수익·이자 배분</b> 같은 수익 분배 요소가 강하면, UAE에서도 ARVA가 아니라 <b>증권(ADGM/DIFC 관할)</b>으로 분류될 수 있어 구조 설계가 필요.</li>
+</ul>
+
+<div class="callout">
+  <b>가장 중요한 함정 — 두바이 법인이 한국법을 면제해 주지 않는다.</b><br>
+  한국 자본시장법은 <b>역외적용</b>되어, <b>한국 거주자에게 모집·광고·판매</b>하면 발행 주체가 두바이 법인이라도
+  한국법(무인가 영업·증권 규제) 책임에서 자유롭지 않다. 따라서 현실적 전략은:
+  <ul>
+    <li>두바이(VARA ARVA) 법인을 <b>글로벌·비한국 투자자</b> 대상 발행·운영 베이스로 사용</li>
+    <li>한국 시장은 <b>별도 규제 시장</b>으로 취급 — 한국 STO 제도(2027~) 편입을 통해서만 진입</li>
+    <li>"오프쇼어 = 규제 프리"라는 가정 금지. 두바이는 <b>규제 회피처가 아니라 정비된 규제 관할</b></li>
+  </ul>
+</div>
+
+<h2>5. 기술 스택 &amp; 개발 환경</h2>
+<div class="callout key">
+  3·4장의 결론(= 본 토큰은 <b>증권형</b>)에 따라, 핵심 선택은 <b>평범한 ERC-20이 아니라 전송 제한·화이트리스트가 가능한
+  증권형 토큰 표준(ERC-3643, T-REX)</b>이다. 규제 분석이 곧 기술 선택을 결정한다.
+</div>
+
+<h3>5-1. 레이어별 스택</h3>
+<table>
+  <thead><tr><th style="width:170px">레이어</th><th style="width:auto">기술</th><th style="width:auto">역할</th></tr></thead>
+  <tr><th>스마트컨트랙트</th><td>Solidity, OpenZeppelin, <b>ERC-3643(T-REX) / ONCHAINID</b>, UUPS 프록시</td><td>증권형 토큰(전송 제한·신원 검증), 업그레이드</td></tr>
+  <tr><th>컨트랙트 도구</th><td>Hardhat + TypeScript(또는 Foundry), <b>Slither·Mythril</b>, Foundry 퍼즈</td><td>개발·테스트·정적분석·퍼즈 테스트</td></tr>
+  <tr><th>오라클</th><td>Chainlink 또는 자체 서명 오라클, <b>web3.py</b> 푸시 서비스</td><td>오프체인 감정가의 온체인 반영</td></tr>
+  <tr><th>백엔드 API</th><td><b>Node.js(NestJS) + Python(FastAPI)</b>, REST/GraphQL, 비동기 큐(BullMQ·Celery)</td><td>서비스 로직, 외부 연동, 트랜잭션 처리</td></tr>
+  <tr><th>데이터·인덱싱</th><td>PostgreSQL, Redis, <b>The Graph</b> 또는 자체 이벤트 인덱서</td><td>온체인 이벤트 색인·조회</td></tr>
+  <tr><th>지갑·수탁</th><td>MPC 커스터디(Fireblocks 등), WalletConnect, Gnosis Safe</td><td>자산 보관, 운영 멀티시그</td></tr>
+  <tr><th>KYC/AML·신원</th><td>Sumsub 등 + 온체인 신원(ONCHAINID)</td><td>투자자 적격성·규제 준수</td></tr>
+  <tr><th>프론트엔드</th><td>Next.js(React) + <b>wagmi/viem · ethers.js</b></td><td>사용자 dApp</td></tr>
+  <tr><th>체인</th><td>Ethereum <b>L2(Base·Arbitrum·Polygon)</b> 또는 허가형 체인</td><td>저수수료·고처리량 정산</td></tr>
+  <tr><th>인프라·DevOps</th><td><b>Docker·Kubernetes, AWS/NCP, GitHub Actions(CI/CD), Terraform</b></td><td>배포 자동화·운영</td></tr>
+  <tr><th>모니터링</th><td>Tenderly(컨트랙트), Grafana·Prometheus, Sentry</td><td>장애·이상 트랜잭션 감지</td></tr>
+</table>
+
+<h3>5-2. 개발 환경 흐름</h3>
+<table>
+  <tr><th>① 로컬</th><td>Hardhat 노드 + <b>Docker Compose</b>(백엔드·DB·오라클 일괄 기동)로 빠른 반복 개발</td></tr>
+  <tr><th>② 테스트</th><td>단위(Hardhat/Foundry) · 통합 · 퍼즈 · 정적분석 → <b>CI에서 자동 실행</b></td></tr>
+  <tr><th>③ 테스트넷</th><td>Sepolia / Base Sepolia 배포 후 E2E 검증, 감사(audit) 전 리허설</td></tr>
+  <tr><th>④ 운영</th><td>외부 <b>보안 감사</b> 후 L2 메인넷 배포, <b>멀티시그 + 타임락</b> 거버넌스, 버그바운티</td></tr>
+</table>
+<p style="font-size:13px; color:var(--muted)">
+  ※ 채용공고 키워드 매핑: JavaScript/Python · Web3.js/Ethers.js · REST/비동기 · AWS·NCP·Docker · 테스트·배포 자동화 · Node.js 를 전 구간에서 커버.
+</p>
+
+<h2>6. 본 포트폴리오의 구현 범위</h2>
+<table>
+  <thead><tr><th style="width:auto">구분</th><th style="width:auto">항목</th></tr></thead>
+  <tr><th>구현</th><td>시계 토큰화(ERC-20) · 감정가 오라클 · 담보 대출/이자/청산 · 테스트 11종 · CI</td></tr>
+  <tr><th>의도적 제외(로드맵)</th><td>AMM/P2P 거래소 · 대여 수익 분배 · 증권 인가·KYC·실물 custody 레이어</td></tr>
+</table>
+<p style="font-size:13.5px; color:var(--muted)">
+  본 저장소는 <b>기술 구현(토큰화 + 담보 금융 + 오라클)</b> 에 집중한 데모이며,
+  실제 서비스화에는 3장의 <b>증권 제도권 편입</b>(한국) 또는 4장의 <b>VARA 라이선스</b>(두바이)가 선행되어야 함을 전제로 한다.
+</p>
+
+<footer>
+  <b>참고 자료</b>
+  <div class="refs">
+    · 금융위, 「조각투자 등 신종증권 가이드라인」(2022.4) — fsc.go.kr/no010101/77728<br>
+    · 토큰증권 전자증권법·자본시장법 개정안 국회 통과(2026.1) — lawtimes.co.kr<br>
+    · 뮤직카우 투자계약증권 판단 / 조각투자 증권성 — nepla.net<br>
+    · UAE VARA ARVA Rulebook(2025.5) &amp; 2026.4 가이던스, RWA 토큰화 가이드 — neoslegal.co, vara.ae<br>
+    · DLD Prypco Mint 부동산 토큰화 선례(2025.5)
+  </div>
+</footer>
+
+</div>
+</body>
+</html>
