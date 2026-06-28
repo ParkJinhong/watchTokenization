@@ -5,6 +5,7 @@ artifacts/
 typechain-types/
 dist/
 deployments.json
+frontend/contracts.js
 coverage/
 coverage.json
 __pycache__/

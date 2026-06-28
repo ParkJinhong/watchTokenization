@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>시계 토큰화 시장 — 테스트 도구</title>
+<style>
+  :root{--ink:#1b2026;--muted:#5b6470;--line:#dde3e8;--bg:#eef1f4;--tok:#15616d;--tok-bg:#eef6f7;--ok:#2f7d4f;--warn:#a63a2a;--gold:#b3791a}
+  *{box-sizing:border-box}
+  body{font-family:"Malgun Gothic","맑은 고딕",-apple-system,"Segoe UI",sans-serif;color:var(--ink);margin:0;background:var(--bg);line-height:1.5}
+  .bar{background:#0f1b1e;color:#dfe9ea;padding:10px 18px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;position:sticky;top:0;z-index:10}
+  .bar b{color:#fff} .bar select{padding:5px 8px;border-radius:6px;border:1px solid #2a3a3e;background:#16262a;color:#fff}
+  .bar .bal{font-size:12.5px;color:#9fb4b6}
+  .bar button{margin-left:auto}
+  .wrap{max-width:1080px;margin:0 auto;padding:18px}
+  .tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+  .tabs button{padding:8px 16px;border:1px solid var(--line);background:#fff;border-radius:8px 8px 0 0;cursor:pointer;font-size:14px;font-weight:700;color:var(--muted)}
+  .tabs button.on{background:var(--tok);color:#fff;border-color:var(--tok)}
+  .panel{display:none} .panel.on{display:block}
+  .card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:16px}
+  .card h3{margin:0 0 12px;font-size:15px;color:var(--tok)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+  label{display:block;font-size:12px;color:var(--muted);margin:8px 0 3px}
+  input,select.f{width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:6px;font-size:13.5px}
+  button{padding:8px 14px;border:none;border-radius:7px;background:var(--tok);color:#fff;font-weight:700;cursor:pointer;font-size:13.5px}
+  button.sub{background:#fff;color:var(--tok);border:1px solid var(--tok);padding:4px 10px;font-size:12px}
+  button.warn{background:var(--warn)} button:disabled{opacity:.5;cursor:not-allowed}
+  table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px}
+  th,td{border:1px solid var(--line);padding:6px 8px;text-align:left}
+  th{background:var(--tok-bg);color:var(--tok)}
+  .row2{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+  .row2>div{flex:1 1 120px}
+  .mut{font-size:12px;color:var(--muted)}
+  .big{font-size:20px;font-weight:800;color:var(--tok)}
+  #log{font-family:Consolas,monospace;font-size:12px;background:#0f1b1e;color:#cfe3e6;border-radius:8px;padding:10px;height:130px;overflow:auto;white-space:pre-wrap;margin-top:8px}
+  .pill{display:inline-block;font-size:11px;font-weight:700;padding:1px 7px;border-radius:7px}
+  .pill.sell{background:#fdecea;color:var(--warn)} .pill.buy{background:#e6f2ec;color:var(--ok)}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <b>🕒 시계 토큰화 시장</b>
+  <span>계정</span>
+  <select id="acct"></select>
+  <span class="bal" id="acctAddr"></span>
+  <span class="bal" id="acctBal"></span>
+  <button class="sub" onclick="faucet()">USDC 받기(+10만)</button>
+</div>
+
+<div class="wrap">
+  <div class="tabs">
+    <button class="on" data-tab="issue">① 토큰 발행</button>
+    <button data-tab="trade">② P2P 거래</button>
+    <button data-tab="div">③④ 대여수수료 · 배당</button>
+  </div>
+
+  <!-- ===================== 발행 ===================== -->
+  <div class="panel on" id="p-issue">
+    <div class="grid">
+      <div class="card">
+        <h3>① 회사 보유분 토큰화</h3>
+        <label>이름</label><input id="c_name" value="Rolex Submariner #1">
+        <label>심볼</label><input id="c_sym" value="wRLX1">
+        <div class="row2">
+          <div><label>등급</label><select class="f" id="c_grade"><option>S</option><option>A</option><option>B</option><option>C</option></select></div>
+          <div><label>총 지분 수</label><input id="c_total" value="1000"></div>
+        </div>
+        <label>감정서 번호</label><input id="c_ref" value="APP-2026-0001">
+        <div style="margin-top:10px"><button onclick="issueCompany()">회사 명의로 발행</button></div>
+        <div class="mut" style="margin-top:6px">전량을 현재 계정(회사)에 발행합니다.</div>
+      </div>
+
+      <div class="card">
+        <h3>② 자금 모집 후 분배</h3>
+        <label>이름</label><input id="f_name" value="Rolex Daytona #2">
+        <label>심볼</label><input id="f_sym" value="wRLX2">
+        <label>등급</label><select class="f" id="f_grade"><option>S</option><option>A</option><option>B</option><option>C</option></select>
+        <div id="f_rows" style="margin-top:8px"></div>
+        <button class="sub" onclick="addCrowdRow()" style="margin-top:6px">+ 투자자 추가</button>
+        <div style="margin-top:10px"><button onclick="issueCrowdfund()">기여자에게 분배 발행</button></div>
+      </div>
+
+      <div class="card">
+        <h3>③ 토큰화 희망자 중개</h3>
+        <label>이름</label><input id="g_name" value="Omega Speedmaster #3">
+        <label>심볼</label><input id="g_sym" value="wOMG3">
+        <div class="row2">
+          <div><label>등급</label><select class="f" id="g_grade"><option>S</option><option>A</option><option>B</option><option>C</option></select></div>
+          <div><label>총 지분 수</label><input id="g_total" value="500"></div>
+        </div>
+        <label>감정서 번호</label><input id="g_ref" value="APP-2026-0003">
+        <label>의뢰인(시계 소유자)</label><select class="f" id="g_consignor"></select>
+        <div style="margin-top:10px"><button onclick="issueConsignment()">의뢰인 명의로 발행</button></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>발행된 시계 토큰</h3>
+      <table id="watchTable"><thead><tr><th>이름</th><th>심볼</th><th>등급</th><th>발행방법</th><th>총지분</th><th>내 보유</th><th>주소</th></tr></thead><tbody></tbody></table>
+    </div>
+  </div>
+
+  <!-- ===================== 거래 ===================== -->
+  <div class="panel" id="p-trade">
+    <div class="card">
+      <h3>거래할 시계 선택</h3>
+      <select class="f" id="tradeSel" onchange="refreshTrade()"></select>
+      <div class="mut" id="tradeBal" style="margin-top:8px"></div>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h3><span class="pill sell">매도 등록</span></h3>
+        <div class="row2">
+          <div><label>수량(지분)</label><input id="s_amt" value="100"></div>
+          <div><label>토큰당 가격(USDC)</label><input id="s_price" value="10"></div>
+        </div>
+        <div style="margin-top:10px"><button onclick="createSell()">매도 주문 등록</button></div>
+      </div>
+      <div class="card">
+        <h3><span class="pill buy">매수 등록</span></h3>
+        <div class="row2">
+          <div><label>수량(지분)</label><input id="b_amt" value="50"></div>
+          <div><label>토큰당 가격(USDC)</label><input id="b_price" value="10"></div>
+        </div>
+        <div style="margin-top:10px"><button onclick="createBuy()">매수 주문 등록</button></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>주문장 (Order Book)</h3>
+      <table id="orderTable"><thead><tr><th>#</th><th>구분</th><th>등록자</th><th>남은수량</th><th>가격</th><th>총액(USDC)</th><th>액션</th></tr></thead><tbody></tbody></table>
+    </div>
+  </div>
+
+  <!-- ===================== 배당 ===================== -->
+  <div class="panel" id="p-div">
+    <div class="card">
+      <h3>시계 선택</h3>
+      <select class="f" id="divSel" onchange="refreshDiv()"></select>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h3>내 배당</h3>
+        <div class="mut">청구 가능 배당</div>
+        <div class="big" id="d_claimable">-</div>
+        <div class="mut" id="d_share" style="margin:6px 0"></div>
+        <button onclick="claim()">배당 출금</button>
+      </div>
+      <div class="card">
+        <h3>대여 수수료 분배 (회사)</h3>
+        <div class="mut">누적 분배 총액: <b id="d_total">-</b> USDC</div>
+        <label>1회 분배 금액(USDC)</label><input id="d_amt" value="10">
+        <div class="row2" style="margin-top:10px">
+          <div><button onclick="distributeOnce()">지금 1회 분배</button></div>
+          <div><button id="autoBtn" onclick="toggleAuto()">10초마다 자동분배 시작</button></div>
+        </div>
+        <div class="mut" style="margin-top:6px">현재 계정이 대여 수익을 입금해 전체 보유자에게 분배합니다.</div>
+      </div>
+    </div>
+    <div class="card"><h3>로그</h3><div id="log"></div></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+<script src="contracts.js"></script>
+<script>
+const RPC = "http://127.0.0.1:8545";
+// Hardhat 기본 계정 (로컬 테스트 전용 공개 키)
+const ACCOUNTS = [
+  { label: "회사(account0)", pk: "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80" },
+  { label: "투자자A(account1)", pk: "0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d" },
+  { label: "투자자B(account2)", pk: "0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a" },
+  { label: "투자자C(account3)", pk: "0x7c852118294e51e653712a81e05800f419141751be58f605c371e15141b007a6" },
+  { label: "기타(account4)", pk: "0x47e179ec197488593b187f80a00eb0da91f1b9d0b13f8733639f19c30a34926a" },
+];
+const GRADES = ["S", "A", "B", "C"];
+const METHODS = ["회사보유", "자금모집", "중개"];
+
+const provider = new ethers.JsonRpcProvider(RPC);
+const ADDRS = ACCOUNTS.map(a => new ethers.Wallet(a.pk).address);
+const A2L = {}; ADDRS.forEach((a,i)=> A2L[a.toLowerCase()] = ACCOUNTS[i].label);
+let cur = 0;
+let autoTimer = null;
+
+const T = x => ethers.parseUnits(String(x), 18);
+const U = x => ethers.parseUnits(String(x), 6);
+const fT = x => Number(ethers.formatUnits(x, 18)).toLocaleString();
+const fU = x => Number(ethers.formatUnits(x, 6)).toLocaleString(undefined,{maximumFractionDigits:6});
+const short = a => a.slice(0,6)+"…"+a.slice(-4);
+const signer = () => new ethers.Wallet(ACCOUNTS[cur].pk, provider);
+
+const C = {
+  usdc: (s)=> new ethers.Contract(APP.addresses.usdc, APP.abis.MockUSDC, s||provider),
+  factory: (s)=> new ethers.Contract(APP.addresses.factory, APP.abis.WatchFactory, s||provider),
+  market: (s)=> new ethers.Contract(APP.addresses.market, APP.abis.P2PMarket, s||provider),
+  share: (addr, s)=> new ethers.Contract(addr, APP.abis.WatchShare, s||provider),
+};
+
+function log(msg){ const el=document.getElementById("log"); if(el){ el.textContent += msg+"\n"; el.scrollTop=el.scrollHeight; } }
+async function run(promise, ok){ try{ const tx=await promise; await tx.wait(); log("✅ "+ok); await refreshAll(); }catch(e){ const m=(e.shortMessage||e.message||e).toString(); log("❌ "+m); alert(m); } }
+async function ensureApprove(token, spender, needed){
+  const owner = ADDRS[cur];
+  const cur_ = await token.allowance(owner, spender);
+  if (cur_ < needed){ const tx = await token.connect(signer()).approve(spender, ethers.MaxUint256); await tx.wait(); }
+}
+
+// ---------- 계정/탭 ----------
+function buildAccountUI(){
+  const sel=document.getElementById("acct");
+  sel.innerHTML = ACCOUNTS.map((a,i)=>`<option value="${i}">${a.label}</option>`).join("");
+  sel.onchange = e => { cur=+e.target.value; refreshAll(); };
+  for (const id of ["g_consignor"]) {
+    document.getElementById(id).innerHTML = ACCOUNTS.map((a,i)=>`<option value="${ADDRS[i]}">${a.label}</option>`).join("");
+  }
+}
+document.querySelectorAll(".tabs button").forEach(b=> b.onclick = ()=>{
+  document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("on"));
+  document.querySelectorAll(".panel").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on");
+  document.getElementById("p-"+b.dataset.tab).classList.add("on");
+});
+
+// ---------- 발행 ----------
+function addCrowdRow(holderIdx){
+  const box=document.getElementById("f_rows");
+  const i=box.children.length;
+  const div=document.createElement("div");
+  div.className="row2"; div.style.marginTop="6px";
+  div.innerHTML=`<div><label>투자자</label><select class="f frow-h">${ACCOUNTS.map((a,k)=>`<option value="${ADDRS[k]}" ${k===(holderIdx??i)?'selected':''}>${a.label}</option>`).join("")}</select></div>
+    <div><label>지분 수</label><input class="frow-a" value="${i===0?600:400}"></div>`;
+  box.appendChild(div);
+}
+async function issueCompany(){
+  const g=document.getElementById("c_grade").selectedIndex;
+  await run(C.factory(signer()).issueCompany(c_name.value, c_sym.value, g, c_ref.value, T(c_total.value)), "회사 보유분 발행 완료");
+}
+async function issueCrowdfund(){
+  const g=document.getElementById("f_grade").selectedIndex;
+  const hs=[...document.querySelectorAll(".frow-h")].map(s=>s.value);
+  const as=[...document.querySelectorAll(".frow-a")].map(i=>T(i.value));
+  await run(C.factory(signer()).issueCrowdfund(f_name.value, f_sym.value, g, "APP-CF", hs, as), "자금 모집 분배 발행 완료");
+}
+async function issueConsignment(){
+  const g=document.getElementById("g_grade").selectedIndex;
+  await run(C.factory(signer()).issueConsignment(g_name.value, g_sym.value, g, g_ref.value, T(g_total.value), g_consignor.value), "중개 발행 완료");
+}
+
+// ---------- 데이터 로드 ----------
+let WATCHES=[];
+async function loadWatches(){ WATCHES = await C.factory().allWatches(); }
+
+async function refreshAccount(){
+  document.getElementById("acctAddr").textContent = short(ADDRS[cur]);
+  const eth = await provider.getBalance(ADDRS[cur]);
+  const u = await C.usdc().balanceOf(ADDRS[cur]);
+  document.getElementById("acctBal").textContent = `USDC ${fU(u)} · ETH ${Number(ethers.formatEther(eth)).toFixed(2)}`;
+}
+async function refreshWatchTable(){
+  const tb=document.querySelector("#watchTable tbody"); tb.innerHTML="";
+  for(const w of WATCHES){
+    const bal = await C.share(w.token).balanceOf(ADDRS[cur]);
+    tb.innerHTML += `<tr><td>${w.name}</td><td>${w.symbol}</td><td>${GRADES[Number(w.grade)]}</td><td>${METHODS[Number(w.method)]}</td><td>${fT(w.totalShares)}</td><td>${fT(bal)}</td><td>${short(w.token)}</td></tr>`;
+  }
+  // 셀렉터 채우기
+  const opts = WATCHES.map((w,i)=>`<option value="${w.token}">${w.name} (${w.symbol})</option>`).join("");
+  for(const id of ["tradeSel","divSel"]){ const s=document.getElementById(id); const v=s.value; s.innerHTML=opts; if(v) s.value=v; }
+}
+async function faucet(){ await run(C.usdc(signer()).mint(ADDRS[cur], U(100000)), "USDC 10만 지급"); }
+
+// ---------- 거래 ----------
+function tradeAddr(){ return document.getElementById("tradeSel").value; }
+async function refreshTrade(){
+  const addr=tradeAddr(); if(!addr) return;
+  const t=C.share(addr);
+  const bal=await t.balanceOf(ADDRS[cur]);
+  const u=await C.usdc().balanceOf(ADDRS[cur]);
+  document.getElementById("tradeBal").innerHTML = `내 보유 지분: <b>${fT(bal)}</b> · 내 USDC: <b>${fU(u)}</b>`;
+  const orders=await C.market().allOrders();
+  const tb=document.querySelector("#orderTable tbody"); tb.innerHTML="";
+  for(const o of orders){
+    if(o.token.toLowerCase()!==addr.toLowerCase() || !o.active) continue;
+    const isSell=Number(o.side)===0;
+    const total=fU((o.remaining*o.price)/(10n**18n));
+    const mine = o.maker.toLowerCase()===ADDRS[cur].toLowerCase();
+    const act = mine
+      ? `<button class="sub warn" onclick="cancelOrder(${o.id})">취소</button>`
+      : `<button class="sub" onclick="fill(${o.id}, ${isSell})">체결</button>`;
+    tb.innerHTML += `<tr><td>${o.id}</td><td><span class="pill ${isSell?'sell':'buy'}">${isSell?'매도':'매수'}</span></td><td>${A2L[o.maker.toLowerCase()]||short(o.maker)}</td><td>${fT(o.remaining)}</td><td>${fU(o.price)}</td><td>${total}</td><td>${act}</td></tr>`;
+  }
+}
+async function createSell(){
+  const addr=tradeAddr(); const amt=T(s_amt.value);
+  await ensureApprove(C.share(addr), APP.addresses.market, amt);
+  await run(C.market(signer()).createSell(addr, amt, U(s_price.value)), "매도 등록 완료");
+}
+async function createBuy(){
+  const addr=tradeAddr(); const amt=T(b_amt.value); const price=U(b_price.value);
+  const cost=(amt*price)/(10n**18n);
+  await ensureApprove(C.usdc(), APP.addresses.market, cost);
+  await run(C.market(signer()).createBuy(addr, amt, price), "매수 등록 완료");
+}
+async function fill(id, isSell){
+  const orders=await C.market().allOrders(); const o=orders[id];
+  const input=prompt("체결 수량(지분)?", fT(o.remaining).replace(/,/g,""));
+  if(!input) return;
+  const fillAmt=T(input);
+  if(isSell){ // 매도 체결: 내가 USDC 지불
+    const cost=(fillAmt*o.price)/(10n**18n);
+    await ensureApprove(C.usdc(), APP.addresses.market, cost);
+    await run(C.market(signer()).fillSell(id, fillAmt), "매도주문 체결(매수) 완료");
+  } else { // 매수 체결: 내가 토큰 지불
+    await ensureApprove(C.share(o.token), APP.addresses.market, fillAmt);
+    await run(C.market(signer()).fillBuy(id, fillAmt), "매수주문 체결(매도) 완료");
+  }
+}
+async function cancelOrder(id){ await run(C.market(signer()).cancel(id), "주문 취소 완료"); }
+
+// ---------- 배당 ----------
+function divAddr(){ return document.getElementById("divSel").value; }
+async function refreshDiv(){
+  const addr=divAddr(); if(!addr) return;
+  const t=C.share(addr);
+  const [claimable, total, bal, supply] = await Promise.all([
+    t.withdrawableDividendOf(ADDRS[cur]), t.totalDividendsDistributed(), t.balanceOf(ADDRS[cur]), t.totalSupply()
+  ]);
+  document.getElementById("d_claimable").textContent = fU(claimable)+" USDC";
+  document.getElementById("d_total").textContent = fU(total);
+  const pct = supply>0n ? (Number(bal)/Number(supply)*100).toFixed(2) : "0";
+  document.getElementById("d_share").textContent = `내 지분: ${fT(bal)} (${pct}%)`;
+}
+async function claim(){ await run(C.share(divAddr(), signer()).withdrawDividend(), "배당 출금 완료"); await refreshDiv(); }
+async function distributeOnce(){
+  const addr=divAddr(); const amt=U(d_amt.value);
+  await ensureApprove(C.usdc(), addr, amt);
+  await run(C.share(addr, signer()).distributeRentalFee(amt), `대여수수료 ${d_amt.value} USDC 분배`);
+  await refreshDiv();
+}
+async function toggleAuto(){
+  const btn=document.getElementById("autoBtn");
+  if(autoTimer){ clearInterval(autoTimer); autoTimer=null; btn.textContent="10초마다 자동분배 시작"; btn.classList.remove("warn"); log("⏹ 자동분배 중지"); return; }
+  btn.textContent="자동분배 중지"; btn.classList.add("warn");
+  const tick=async()=>{ try{
+    const addr=divAddr(); const amt=U(d_amt.value);
+    await ensureApprove(C.usdc(), addr, amt*1000n);
+    const tx=await C.share(addr, signer()).distributeRentalFee(amt); await tx.wait();
+    log(`💸 자동분배 ${d_amt.value} USDC`); await refreshDiv(); await refreshAccount();
+  }catch(e){ log("❌ "+(e.shortMessage||e.message)); } };
+  await tick();
+  autoTimer=setInterval(tick, 10000);
+}
+
+// ---------- 전체 새로고침 ----------
+async function refreshAll(){
+  await loadWatches();
+  await refreshAccount();
+  await refreshWatchTable();
+  await refreshTrade();
+  await refreshDiv();
+}
+
+async function init(){
+  if(typeof APP==="undefined"){ alert("contracts.js 가 없습니다. 먼저 npm run deploy:app 을 실행하세요."); return; }
+  buildAccountUI();
+  addCrowdRow(1); addCrowdRow(2); // 투자자A/B 기본 2행
+  try{ await provider.getBlockNumber(); }catch{ alert("RPC 연결 실패 — npx hardhat node 가 떠 있나요?"); return; }
+  await refreshAll();
+  log("준비 완료. 계정을 바꿔가며 발행→거래→배당을 테스트하세요.");
+}
+init();
+</script>
+</body>
+</html>
