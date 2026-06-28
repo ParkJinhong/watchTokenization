@@ -18,13 +18,30 @@
 
 ## 아키텍처
 
+```mermaid
+flowchart LR
+    Oracle["Python 오라클<br/>(web3.py)"] -- "setPrice(감정가)" --> PO[PriceOracle]
+    PO -- "getPrice() · stale 체크" --> Vault[WatchVault]
+    User[사용자] -- "예치 / 대출 / 상환" --> Vault
+    Liq[청산자] -- "부채 상환 → 담보 인수" --> Vault
+    Vault -- "담보" --> WT["WatchToken<br/>(ERC-20)"]
+    Vault -- "대출금" --> USDC["MockUSDC<br/>(6 decimals)"]
 ```
-[Python 오라클]  --setPrice(감정가)-->  [PriceOracle]
- (web3.py)                                   │ getPrice (stale 체크)
-                                             ▼
-[사용자] --담보 예치/대출/상환--> [WatchVault] --50% LTV / 청산 판정-->
-              │                        │
-        [WatchToken(ERC-20)]      [MockUSDC(6dp)]
+
+### 청산 흐름
+
+```mermaid
+sequenceDiagram
+    participant O as Python 오라클
+    participant P as PriceOracle
+    participant V as WatchVault
+    participant L as 청산자
+    O->>P: setPrice(하락한 감정가)
+    Note over V: 담보 평가액 ≤ 부채<br/>(시계가 50% 하락)
+    L->>V: liquidate(borrower)
+    V->>P: getPrice() 검증 (non-stale)
+    L-->>V: 부채(USDC) 대신 상환
+    V-->>L: 담보(WatchToken) 전량 인수
 ```
 
 ## 컨트랙트
