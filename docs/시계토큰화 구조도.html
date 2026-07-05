@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+  <style>
+    body { margin:0; background:oklch(20% 0.045 258); }
+    * { box-sizing:border-box; }
+  </style>
+</helmet>
+
+<div style="font-family:'Pretendard',sans-serif; background:oklch(20% 0.045 258); min-height:100vh; padding:56px 24px 96px; color:#17181c;">
+  <div style="max-width:1120px; margin:0 auto; display:flex; flex-direction:column; gap:56px;">
+
+    <!-- ===== TOP NAV ===== -->
+    <div style="display:flex; flex-direction:column; gap:10px; padding-bottom:8px;">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="width:10px; height:10px; border-radius:50%; background:oklch(72% 0.15 258);"></div>
+        <div style="color:oklch(78% 0.03 258); font-size:15px; letter-spacing:0.14em; text-transform:uppercase; font-weight:700;">RWA Architecture</div>
+      </div>
+      <div style="color:#f7f6f2; font-size:40px; font-weight:800; letter-spacing:-0.02em;">시계 자산 토큰화 플랫폼 · 구조도</div>
+      <div style="color:oklch(72% 0.03 258); font-size:17px; line-height:1.6;">시스템 전체 구조 · A. 토큰화 시장 · B. 대출 시장 &nbsp;—&nbsp; <span style="color:oklch(80% 0.12 150); font-weight:700;">초록 배지 = 실제 구현 완료</span></div>
+      <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+        <a href="#sys" style="text-decoration:none; padding:9px 18px; border-radius:999px; background:oklch(28% 0.05 258); color:oklch(88% 0.03 258); font-size:15px; font-weight:600;">① 시스템 구조</a>
+        <a href="#mktA" style="text-decoration:none; padding:9px 18px; border-radius:999px; background:oklch(28% 0.05 258); color:oklch(88% 0.03 258); font-size:15px; font-weight:600;">A. 토큰화 시장</a>
+        <a href="#mktB" style="text-decoration:none; padding:9px 18px; border-radius:999px; background:oklch(28% 0.05 258); color:oklch(88% 0.03 258); font-size:15px; font-weight:600;">B. 대출 시장</a>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ① SYSTEM ARCHITECTURE                                        -->
+    <!-- ============================================================ -->
+    <section id="sys" style="background:#f7f6f2; border-radius:24px; padding:56px 60px; box-shadow:0 24px 60px -30px rgba(0,0,0,0.5);">
+      <div style="color:oklch(52% 0.13 200); font-size:15px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:10px;">System Architecture</div>
+      <div style="font-size:34px; font-weight:800; letter-spacing:-0.01em; margin-bottom:8px;">전체 시스템 구조</div>
+      <div style="color:#5b6470; font-size:17px; line-height:1.6; margin-bottom:40px;">사용자부터 규제 레이어까지 6개 계층. 각 계층이 위에서 아래로 요청·데이터를 전달합니다.</div>
+
+      <!-- Layer 1 사용자 -->
+      <div style="border:1px solid #e6e3dc; border-radius:16px; padding:26px 26px 22px; background:#fff; position:relative;">
+        <div style="position:absolute; top:-13px; left:24px; font-size:13px; font-weight:800; letter-spacing:0.02em; padding:4px 14px; border-radius:999px; color:#fff; background:oklch(52% 0.02 258);">① 사용자</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-top:8px;">
+          <div style="border:1.5px solid oklch(52% 0.02 258); border-radius:12px; padding:16px 18px;"><div style="font-weight:800; font-size:17px; color:oklch(45% 0.02 258); margin-bottom:4px;">투자자</div><div style="font-size:14px; color:#5b6470; line-height:1.5;">분할 토큰 매수 · 대여수익 수취</div></div>
+          <div style="border:1.5px solid oklch(52% 0.02 258); border-radius:12px; padding:16px 18px;"><div style="font-weight:800; font-size:17px; color:oklch(45% 0.02 258); margin-bottom:4px;">대출자</div><div style="font-size:14px; color:#5b6470; line-height:1.5;">시계 담보로 USDC 대출</div></div>
+          <div style="border:1.5px solid oklch(52% 0.02 258); border-radius:12px; padding:16px 18px;"><div style="font-weight:800; font-size:17px; color:oklch(45% 0.02 258); margin-bottom:4px;">청산자</div><div style="font-size:14px; color:#5b6470; line-height:1.5;">부실 포지션 청산</div></div>
+        </div>
+      </div>
+      <div style="text-align:center; color:#9aa3ad; font-size:14px; font-weight:600; padding:12px 0;">▼ &nbsp;지갑 연결 · 거래 요청</div>
+
+      <!-- Layer 2 앱 -->
+      <div style="border:1px solid #e6e3dc; border-radius:16px; padding:26px 26px 22px; background:#fff; position:relative;">
+        <div style="position:absolute; top:-13px; left:24px; font-size:13px; font-weight:800; padding:4px 14px; border-radius:999px; color:#fff; background:oklch(52% 0.14 285);">② 애플리케이션 (dApp)</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:8px;">
+          <div style="border:1.5px solid oklch(52% 0.14 285); border-radius:12px; padding:16px 18px;"><div style="font-weight:800; font-size:17px; color:oklch(50% 0.14 285); margin-bottom:4px;">Web 프론트엔드</div><div style="font-size:14px; color:#5b6470; line-height:1.5;">Next.js · React</div></div>
+          <div style="border:1.5px solid oklch(52% 0.14 285); border-radius:12px; padding:16px 18px;"><div style="font-weight:800; font-size:17px; color:oklch(50% 0.14 285); margin-bottom:4px;">지갑 연동</div><div style="font-size:14px; color:#5b6470; line-height:1.5;">wagmi / viem · ethers.js · WalletConnect</div></div>
+        </div>
+      </div>
+      <div style="text-align:center; color:#9aa3ad; font-size:14px; font-weight:600; padding:12px 0;">▼ &nbsp;REST / GraphQL · 서명 트랜잭션</div>
+
+      <!-- Layer 3 오프체인 -->
+      <div style="border:1px solid #e6e3dc; border-radius:16px; padding:26px 26px 22px; background:#fff; position:relative;">
+        <div style="position:absolute; top:-13px; left:24px; font-size:13px; font-weight:800; padding:4px 14px; border-radius:999px; color:#fff; background:oklch(45% 0.09 200);">③ 오프체인 백엔드</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:8px;">
+          <div style="border:1.5px solid oklch(45% 0.09 200); border-radius:12px; padding:16px 18px;"><div style="font-weight:800; font-size:17px; color:oklch(42% 0.09 200); margin-bottom:4px;">감정·등급 엔진</div><div style="font-size:14px; color:#5b6470; line-height:1.5;">컨디션 체크 → S/A/B/C · 시세 산정</div></div>
+          <div style="border:1.5px solid oklch(45% 0.09 200); border-radius:12px; padding:16px 18px;"><div style="font-weight:800; font-size:17px; color:oklch(42% 0.09 200); margin-bottom:4px;">오라클 푸시 서비스 <span style="font-size:11px; font-weight:800; color:#fff; background:oklch(55% 0.15 150); padding:2px 8px; border-radius:999px; vertical-align:middle;">구현 oracle.py</span></div><div style="font-size:14px; color:#5b6470; line-height:1.5;">web3.py · 감정가 온체인 반영</div></div>
+          <div style="border:1.5px solid oklch(45% 0.09 200); border-radius:12px; padding:16px 18px;"><div style="font-weight:800; font-size:17px; color:oklch(42% 0.09 200); margin-bottom:4px;">KYC / AML</div><div style="font-size:14px; color:#5b6470; line-height:1.5;">투자자 적격성 · 신원 확인</div></div>
+          <div style="border:1.5px solid oklch(45% 0.09 200); border-radius:12px; padding:16px 18px;"><div style="font-weight:800; font-size:17px; color:oklch(42% 0.09 200); margin-bottom:4px;">API · 인덱서</div><div style="font-size:14px; color:#5b6470; line-height:1.5;">NestJS / FastAPI · PostgreSQL · The Graph</div></div>
+        </div>
+      </div>
+      <div style="text-align:center; color:#9aa3ad; font-size:14px; font-weight:600; padding:12px 0;">▼ &nbsp;시세 push · 발행/대출/청산 트랜잭션</div>
+
+      <!-- Layer 4 온체인 -->
+      <div style="border:1.5px solid oklch(70% 0.14 150); border-radius:16px; padding:26px 26px 22px; background:oklch(97% 0.03 150); position:relative;">
+        <div style="position:absolute; top:-13px; left:24px; font-size:13px; font-weight:800; padding:4px 14px; border-radius:999px; color:#fff; background:oklch(50% 0.13 150);">④ 온체인 — 스마트컨트랙트</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-top:8px;">
+          <div style="border:1.5px solid oklch(55% 0.13 150); border-radius:12px; padding:16px 18px; background:#fff;"><div style="font-weight:800; font-size:17px; color:oklch(42% 0.11 150); margin-bottom:4px;">WatchToken <span style="font-size:11px; font-weight:800; color:#fff; background:oklch(55% 0.15 150); padding:2px 8px; border-radius:999px;">구현 ERC-20</span></div><div style="font-size:14px; color:#5b6470; line-height:1.5;">시계 분할 지분 토큰 · 등급 기록 (증권형이면 ERC-3643)</div></div>
+          <div style="border:1.5px solid oklch(55% 0.13 150); border-radius:12px; padding:16px 18px; background:#fff;"><div style="font-weight:800; font-size:17px; color:oklch(42% 0.11 150); margin-bottom:4px;">PriceOracle <span style="font-size:11px; font-weight:800; color:#fff; background:oklch(55% 0.15 150); padding:2px 8px; border-radius:999px;">구현</span></div><div style="font-size:14px; color:#5b6470; line-height:1.5;">감정가 저장 · stale 검증</div></div>
+          <div style="border:1.5px solid oklch(55% 0.13 150); border-radius:12px; padding:16px 18px; background:#fff;"><div style="font-weight:800; font-size:17px; color:oklch(42% 0.11 150); margin-bottom:4px;">WatchVault <span style="font-size:11px; font-weight:800; color:#fff; background:oklch(55% 0.15 150); padding:2px 8px; border-radius:999px;">구현</span></div><div style="font-size:14px; color:#5b6470; line-height:1.5;">50% LTV 대출 · 이자 · 청산</div></div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;">
+          <div style="border:1.5px dashed oklch(60% 0.06 150); border-radius:12px; padding:16px 18px; background:#fff;"><div style="font-weight:800; font-size:17px; color:oklch(42% 0.11 150); margin-bottom:4px;">RevenueDistributor <span style="font-size:11px; font-weight:800; color:#fff; background:#9aa3ad; padding:2px 8px; border-radius:999px;">로드맵</span></div><div style="font-size:14px; color:#5b6470; line-height:1.5;">대여수익 · 이자 pull-claim 분배</div></div>
+          <div style="border:1.5px dashed oklch(60% 0.06 150); border-radius:12px; padding:16px 18px; background:#fff;"><div style="font-weight:800; font-size:17px; color:oklch(42% 0.11 150); margin-bottom:4px;">거래소 (AMM / P2P) <span style="font-size:11px; font-weight:800; color:#fff; background:#9aa3ad; padding:2px 8px; border-radius:999px;">로드맵</span></div><div style="font-size:14px; color:#5b6470; line-height:1.5;">2차 거래 — 증권형은 인가 거래소만</div></div>
+        </div>
+      </div>
+      <div style="text-align:center; color:#9aa3ad; font-size:14px; font-weight:600; padding:12px 0;">▼ &nbsp;담보 가치 ↔ 실물 1:1 연동</div>
+
+      <!-- Layer 5 실물/수탁 -->
+      <div style="border:1px solid #e6e3dc; border-radius:16px; padding:26px 26px 22px; background:#fff; position:relative;">
+        <div style="position:absolute; top:-13px; left:24px; font-size:13px; font-weight:800; padding:4px 14px; border-radius:999px; color:#fff; background:oklch(58% 0.11 75);">⑤ 실물 자산 · 수탁</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-top:8px;">
+          <div style="border:1.5px solid oklch(58% 0.11 75); border-radius:12px; padding:16px 18px;"><div style="font-weight:800; font-size:17px; color:oklch(50% 0.11 75); margin-bottom:4px;">시계 보관 (Custody)</div><div style="font-size:14px; color:#5b6470; line-height:1.5;">실물 시계 안전 보관 · 보험</div></div>
+          <div style="border:1.5px solid oklch(58% 0.11 75); border-radius:12px; padding:16px 18px;"><div style="font-weight:800; font-size:17px; color:oklch(50% 0.11 75); margin-bottom:4px;">진위 · 감정</div><div style="font-size:14px; color:#5b6470; line-height:1.5;">진품 보증 → 감정가가 오라클의 신뢰 원천</div></div>
+          <div style="border:1.5px solid oklch(58% 0.11 75); border-radius:12px; padding:16px 18px;"><div style="font-weight:800; font-size:17px; color:oklch(50% 0.11 75); margin-bottom:4px;">청산 시 실물 처분</div><div style="font-size:14px; color:#5b6470; line-height:1.5;">온체인 청산 ↔ 오프체인 매각 정합</div></div>
+        </div>
+      </div>
+
+      <!-- Layer 6 규제 -->
+      <div style="border:1.5px solid oklch(60% 0.13 30); border-radius:16px; padding:26px 26px 22px; background:oklch(97% 0.02 30); position:relative; margin-top:26px;">
+        <div style="position:absolute; top:-13px; left:24px; font-size:13px; font-weight:800; padding:4px 14px; border-radius:999px; color:#fff; background:oklch(52% 0.16 30);">⑥ 규제 · 유통 레이어 (전 구간 적용)</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-top:8px;">
+          <div style="border:1.5px solid oklch(60% 0.13 30); border-radius:12px; padding:16px 18px; background:#fff;"><div style="font-weight:800; font-size:17px; color:oklch(48% 0.16 30); margin-bottom:4px;">증권성 판단</div><div style="font-size:14px; color:#5b6470; line-height:1.5;">대여수익·투자유인 → 투자계약증권 가능성</div></div>
+          <div style="border:1.5px solid oklch(60% 0.13 30); border-radius:12px; padding:16px 18px; background:#fff;"><div style="font-weight:800; font-size:17px; color:oklch(48% 0.16 30); margin-bottom:4px;">한국</div><div style="font-size:14px; color:#5b6470; line-height:1.5;">자본시장법 · STO 제도(2027~) · 인가 장외시장 유통</div></div>
+          <div style="border:1.5px solid oklch(60% 0.13 30); border-radius:12px; padding:16px 18px; background:#fff;"><div style="font-weight:800; font-size:17px; color:oklch(48% 0.16 30); margin-bottom:4px;">두바이</div><div style="font-size:14px; color:#5b6470; line-height:1.5;">VARA ARVA 라이선스 · 인가 VASP 유통</div></div>
+        </div>
+      </div>
+
+      <!-- legend -->
+      <div style="display:flex; flex-wrap:wrap; gap:18px; margin-top:32px; padding-top:22px; border-top:1px solid #e6e3dc; font-size:14px; color:#5b6470;">
+        <span style="display:inline-flex; align-items:center; gap:7px;"><i style="width:13px; height:13px; border-radius:4px; background:oklch(52% 0.02 258);"></i>사용자</span>
+        <span style="display:inline-flex; align-items:center; gap:7px;"><i style="width:13px; height:13px; border-radius:4px; background:oklch(52% 0.14 285);"></i>애플리케이션</span>
+        <span style="display:inline-flex; align-items:center; gap:7px;"><i style="width:13px; height:13px; border-radius:4px; background:oklch(45% 0.09 200);"></i>오프체인</span>
+        <span style="display:inline-flex; align-items:center; gap:7px;"><i style="width:13px; height:13px; border-radius:4px; background:oklch(50% 0.13 150);"></i>온체인</span>
+        <span style="display:inline-flex; align-items:center; gap:7px;"><i style="width:13px; height:13px; border-radius:4px; background:oklch(58% 0.11 75);"></i>실물/수탁</span>
+        <span style="display:inline-flex; align-items:center; gap:7px;"><i style="width:13px; height:13px; border-radius:4px; background:oklch(52% 0.16 30);"></i>규제/유통</span>
+      </div>
+      <div style="margin-top:16px; font-size:13.5px; color:#8a929c; line-height:1.6;">※ 초록 배지 = 본 저장소에서 실제 구현된 컴포넌트(WatchToken · PriceOracle · WatchVault · oracle.py). 나머지(거래소 · 수익분배 · KYC · custody)는 서비스화 로드맵.</div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- A. 토큰화 시장                                                -->
+    <!-- ============================================================ -->
+    <section id="mktA" style="background:#f7f6f2; border-radius:24px; padding:56px 60px; box-shadow:0 24px 60px -30px rgba(0,0,0,0.5);">
+      <div style="color:oklch(45% 0.09 200); font-size:15px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:10px;">A. 토큰화 시장</div>
+      <div style="font-size:34px; font-weight:800; letter-spacing:-0.01em; margin-bottom:8px;">시계를 분할 토큰으로 — 발행 · 투자 · 수익 배분</div>
+      <div style="color:#5b6470; font-size:17px; line-height:1.6; margin-bottom:40px;">고가의 명품 시계를 여러 조각(토큰)으로 나눠 누구나 소액으로 투자하고, 대여·거래로 수익을 만듭니다.</div>
+
+      <!-- flow -->
+      <div style="font-size:19px; font-weight:800; margin-bottom:16px;">1. 핵심 흐름</div>
+      <div style="display:flex; flex-wrap:wrap; align-items:stretch; gap:10px; margin-bottom:40px;">
+        <div style="flex:1 1 160px; border:1.5px solid oklch(80% 0.05 200); border-radius:12px; padding:16px; background:#fff;"><div style="width:24px; height:24px; border-radius:50%; background:oklch(45% 0.09 200); color:#fff; font-size:13px; font-weight:800; display:flex; align-items:center; justify-content:center; margin-bottom:8px;">1</div><div style="font-weight:800; font-size:16px;">시계 공급</div><div style="font-size:13px; color:#5b6470; margin-top:2px;">보유분 / 자금 모집 구입·중개</div></div>
+        <div style="flex:1 1 160px; border:1.5px solid oklch(80% 0.05 200); border-radius:12px; padding:16px; background:#fff;"><div style="width:24px; height:24px; border-radius:50%; background:oklch(45% 0.09 200); color:#fff; font-size:13px; font-weight:800; display:flex; align-items:center; justify-content:center; margin-bottom:8px;">2</div><div style="font-weight:800; font-size:16px;">감정·등급</div><div style="font-size:13px; color:#5b6470; margin-top:2px;">컨디션 → S·A·B·C</div></div>
+        <div style="flex:1 1 160px; border:1.5px solid oklch(80% 0.05 200); border-radius:12px; padding:16px; background:#fff;"><div style="width:24px; height:24px; border-radius:50%; background:oklch(45% 0.09 200); color:#fff; font-size:13px; font-weight:800; display:flex; align-items:center; justify-content:center; margin-bottom:8px;">3</div><div style="font-weight:800; font-size:16px;">토큰 발행</div><div style="font-size:13px; color:#5b6470; margin-top:2px;">1점 = 분할 지분 토큰</div></div>
+        <div style="flex:1 1 160px; border:1.5px solid oklch(80% 0.05 200); border-radius:12px; padding:16px; background:#fff;"><div style="width:24px; height:24px; border-radius:50%; background:oklch(45% 0.09 200); color:#fff; font-size:13px; font-weight:800; display:flex; align-items:center; justify-content:center; margin-bottom:8px;">4</div><div style="font-weight:800; font-size:16px;">투자자 매수</div><div style="font-size:13px; color:#5b6470; margin-top:2px;">소액 분할 투자</div></div>
+        <div style="flex:1 1 160px; border:1.5px solid oklch(80% 0.05 200); border-radius:12px; padding:16px; background:#fff;"><div style="width:24px; height:24px; border-radius:50%; background:oklch(45% 0.09 200); color:#fff; font-size:13px; font-weight:800; display:flex; align-items:center; justify-content:center; margin-bottom:8px;">5</div><div style="font-weight:800; font-size:16px;">거래·수익</div><div style="font-size:13px; color:#5b6470; margin-top:2px;">2차 거래 / 대여 배분</div></div>
+      </div>
+
+      <!-- grades table -->
+      <div style="font-size:19px; font-weight:800; margin-bottom:16px;">2. 감정·등급 — 같은 모델도 컨디션이 다르다</div>
+      <table style="width:100%; border-collapse:collapse; font-size:15px; margin-bottom:40px;">
+        <thead><tr>
+          <th style="border:1px solid #e6e3dc; padding:12px 14px; text-align:center; background:oklch(95% 0.02 200); color:oklch(40% 0.09 200); width:80px;">등급</th>
+          <th style="border:1px solid #e6e3dc; padding:12px 14px; text-align:left; background:oklch(95% 0.02 200); color:oklch(40% 0.09 200);">기준 (예시)</th>
+          <th style="border:1px solid #e6e3dc; padding:12px 14px; text-align:left; background:oklch(95% 0.02 200); color:oklch(40% 0.09 200); width:150px;">비고</th>
+        </tr></thead>
+        <tbody>
+          <tr><td style="border:1px solid #e6e3dc; padding:12px 14px; text-align:center; font-weight:800;">S</td><td style="border:1px solid #e6e3dc; padding:12px 14px; color:#3f414a;">미사용/풀세트, 흠집 없음</td><td style="border:1px solid #e6e3dc; padding:12px 14px; color:#5b6470;">프리미엄 가격</td></tr>
+          <tr><td style="border:1px solid #e6e3dc; padding:12px 14px; text-align:center; font-weight:800;">A</td><td style="border:1px solid #e6e3dc; padding:12px 14px; color:#3f414a;">경미한 사용감, 정품 보증서 보유</td><td style="border:1px solid #e6e3dc; padding:12px 14px; color:#5b6470;">표준</td></tr>
+          <tr><td style="border:1px solid #e6e3dc; padding:12px 14px; text-align:center; font-weight:800;">B</td><td style="border:1px solid #e6e3dc; padding:12px 14px; color:#3f414a;">사용감 뚜렷, 일부 부품 교체</td><td style="border:1px solid #e6e3dc; padding:12px 14px; color:#5b6470;">할인</td></tr>
+          <tr><td style="border:1px solid #e6e3dc; padding:12px 14px; text-align:center; font-weight:800;">C</td><td style="border:1px solid #e6e3dc; padding:12px 14px; color:#3f414a;">외관 손상/수리 이력</td><td style="border:1px solid #e6e3dc; padding:12px 14px; color:#5b6470;">큰 할인</td></tr>
+        </tbody>
+      </table>
+
+      <!-- why buy / distribution two-col -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:40px;">
+        <div style="border:1px solid #e6e3dc; border-left:4px solid oklch(45% 0.09 200); border-radius:10px; padding:20px 24px; background:#fff;">
+          <div style="font-weight:800; font-size:17px; color:oklch(42% 0.09 200); margin-bottom:10px;">투자자는 왜 토큰을 사나</div>
+          <div style="font-size:15px; color:#3f414a; line-height:1.75;">· <b>분할 접근성</b> — 통째로 못 사는 고가 시계를 소액으로 일부 보유<br>· <b>시세 차익</b> — 시계 가치 상승 시 토큰 가격도 상승 기대<br>· <b>대여 수익</b> — 보유만으로 대여 수익을 정기 배분</div>
+        </div>
+        <div style="border:1px solid #e6e3dc; border-left:4px solid oklch(45% 0.09 200); border-radius:10px; padding:20px 24px; background:#fff;">
+          <div style="font-weight:800; font-size:17px; color:oklch(42% 0.09 200); margin-bottom:10px;">수익 배분 구조 (pull-claim)</div>
+          <div style="font-size:15px; color:#3f414a; line-height:1.75;">· <b>수익 원천</b> — 시계 대여료(오프체인 → 컨트랙트 입금)<br>· <b>배분 기준</b> — 특정 시점 토큰 보유량 스냅샷 비례<br>· <b>수령 방식</b> — 보유자가 원할 때 자기 몫을 청구(claim)</div>
+        </div>
+      </div>
+
+      <!-- example -->
+      <div style="font-size:19px; font-weight:800; margin-bottom:16px;">3. 예시 시나리오</div>
+      <div style="background:oklch(96% 0.02 200); border:1px solid oklch(88% 0.04 200); border-radius:14px; padding:24px 28px; margin-bottom:40px;">
+        <div style="font-weight:800; font-size:17px; color:oklch(40% 0.09 200); margin-bottom:14px;">롤렉스 서브마리너 — 감정가 1억 원, S등급</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+          <div style="background:#fff; border:1px solid #e6e3dc; border-radius:10px; padding:16px 18px;"><div style="font-size:13px; color:#8a929c; font-weight:700; margin-bottom:4px;">발행</div><div style="font-size:16px;">1,000 토큰 발행 → <b>1토큰 = 10만 원</b></div></div>
+          <div style="background:#fff; border:1px solid #e6e3dc; border-radius:10px; padding:16px 18px;"><div style="font-size:13px; color:#8a929c; font-weight:700; margin-bottom:4px;">투자</div><div style="font-size:16px;">100만 원 투자 → 10토큰 = 지분 1%</div></div>
+          <div style="background:#fff; border:1px solid #e6e3dc; border-radius:10px; padding:16px 18px;"><div style="font-size:13px; color:#8a929c; font-weight:700; margin-bottom:4px;">대여 수익</div><div style="font-size:16px;">연 600만 원 → 토큰당 6,000원 (<b>연 6%</b>)</div></div>
+          <div style="background:#fff; border:1px solid #e6e3dc; border-radius:10px; padding:16px 18px;"><div style="font-size:13px; color:#8a929c; font-weight:700; margin-bottom:4px;">시세 차익</div><div style="font-size:16px;">감정가 1.2억 상승 → 1토큰 12만 원 (<b>+20%</b>)</div></div>
+        </div>
+      </div>
+
+      <!-- revenue + risk -->
+      <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:stretch;">
+        <div style="flex:1 1 300px; display:flex; align-items:center; gap:12px; background:#fff; border:1.5px solid oklch(70% 0.11 75); border-radius:12px; padding:18px 22px;">
+          <div style="font-weight:800; color:oklch(52% 0.11 75); font-size:15px; white-space:nowrap;">회사 수익</div>
+          <div style="font-size:15px; color:#3f414a;">거래 수수료(매매 시) + 대여 수수료(대여 수익의 일정 %)</div>
+        </div>
+      </div>
+      <div style="border:1px solid oklch(85% 0.06 30); border-left:4px solid oklch(52% 0.16 30); border-radius:10px; padding:18px 22px; background:oklch(98% 0.01 30); margin-top:16px;">
+        <div style="font-weight:800; font-size:16px; color:oklch(48% 0.16 30); margin-bottom:6px;">⚠ 리스크 — 증권성</div>
+        <div style="font-size:15px; color:#3f414a; line-height:1.7;">"대여 수익 배분 + 투자 유인"은 한국 자본시장법상 <b>투자계약증권</b>으로 볼 가능성이 큽니다. 이 경우 발행·유통에 인가가 필요하고, 퍼미션리스 거래소 자유 거래가 제한됩니다.</div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- B. 대출 시장                                                  -->
+    <!-- ============================================================ -->
+    <section id="mktB" style="background:#f7f6f2; border-radius:24px; padding:56px 60px; box-shadow:0 24px 60px -30px rgba(0,0,0,0.5);">
+      <div style="color:oklch(48% 0.11 258); font-size:15px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:10px;">B. 대출 시장</div>
+      <div style="font-size:34px; font-weight:800; letter-spacing:-0.01em; margin-bottom:8px;">시계를 담보로 — 대출 · 이자 · 청산</div>
+      <div style="color:#5b6470; font-size:17px; line-height:1.6; margin-bottom:40px;">시계(또는 시계 토큰)를 담보로 현금을 빌려주고, 가격이 일정 수준 이하로 떨어지면 청산해 원금을 보호합니다.</div>
+
+      <!-- flow -->
+      <div style="font-size:19px; font-weight:800; margin-bottom:16px;">1. 핵심 흐름</div>
+      <div style="display:flex; flex-wrap:wrap; align-items:stretch; gap:10px; margin-bottom:14px;">
+        <div style="flex:1 1 150px; border:1.5px solid oklch(80% 0.05 258); border-radius:12px; padding:16px; background:#fff;"><div style="width:24px; height:24px; border-radius:50%; background:oklch(48% 0.11 258); color:#fff; font-size:13px; font-weight:800; display:flex; align-items:center; justify-content:center; margin-bottom:8px;">1</div><div style="font-weight:800; font-size:16px;">담보 예치</div><div style="font-size:13px; color:#5b6470; margin-top:2px;">시계(토큰) 담보 제공</div></div>
+        <div style="flex:1 1 150px; border:1.5px solid oklch(80% 0.05 258); border-radius:12px; padding:16px; background:#fff;"><div style="width:24px; height:24px; border-radius:50%; background:oklch(48% 0.11 258); color:#fff; font-size:13px; font-weight:800; display:flex; align-items:center; justify-content:center; margin-bottom:8px;">2</div><div style="font-weight:800; font-size:16px;">감정가 산정</div><div style="font-size:13px; color:#5b6470; margin-top:2px;">오라클 시세 제공</div></div>
+        <div style="flex:1 1 150px; border:1.5px solid oklch(80% 0.05 258); border-radius:12px; padding:16px; background:#fff;"><div style="width:24px; height:24px; border-radius:50%; background:oklch(48% 0.11 258); color:#fff; font-size:13px; font-weight:800; display:flex; align-items:center; justify-content:center; margin-bottom:8px;">3</div><div style="font-weight:800; font-size:16px;">대출 실행</div><div style="font-size:13px; color:#5b6470; margin-top:2px;">감정가의 50% (LTV)</div></div>
+        <div style="flex:1 1 150px; border:1.5px solid oklch(80% 0.05 258); border-radius:12px; padding:16px; background:#fff;"><div style="width:24px; height:24px; border-radius:50%; background:oklch(48% 0.11 258); color:#fff; font-size:13px; font-weight:800; display:flex; align-items:center; justify-content:center; margin-bottom:8px;">4</div><div style="font-weight:800; font-size:16px;">이자 발생</div><div style="font-size:13px; color:#5b6470; margin-top:2px;">연 5%</div></div>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; align-items:stretch; gap:10px; margin-bottom:40px;">
+        <div style="flex:1 1 240px; border:1.5px solid oklch(80% 0.05 258); border-radius:12px; padding:16px; background:#fff;"><div style="width:24px; height:24px; border-radius:50%; background:oklch(48% 0.11 258); color:#fff; font-size:13px; font-weight:800; display:flex; align-items:center; justify-content:center; margin-bottom:8px;">5</div><div style="font-weight:800; font-size:16px;">시세 모니터링</div><div style="font-size:13px; color:#5b6470; margin-top:2px;">오라클이 시세 지속 추적</div></div>
+        <div style="flex:1 1 240px; border:1.5px solid oklch(65% 0.15 30); border-radius:12px; padding:16px; background:oklch(98% 0.01 30);"><div style="width:24px; height:24px; border-radius:50%; background:oklch(52% 0.16 30); color:#fff; font-size:13px; font-weight:800; display:flex; align-items:center; justify-content:center; margin-bottom:8px;">6</div><div style="font-weight:800; font-size:16px; color:oklch(48% 0.16 30);">청산</div><div style="font-size:13px; color:#5b6470; margin-top:2px;">50% 이하 하락 시 청산자가 부채 상환 → 담보 인수</div></div>
+      </div>
+
+      <!-- liquidation table -->
+      <div style="font-size:19px; font-weight:800; margin-bottom:16px;">2. 청산 메커니즘 — 왜 이렇게 설계하나</div>
+      <table style="width:100%; border-collapse:collapse; font-size:15px; margin-bottom:40px;">
+        <thead><tr>
+          <th style="border:1px solid #e6e3dc; padding:12px 14px; text-align:left; background:oklch(95% 0.03 258); color:oklch(42% 0.11 258); width:160px;">요소</th>
+          <th style="border:1px solid #e6e3dc; padding:12px 14px; text-align:left; background:oklch(95% 0.03 258); color:oklch(42% 0.11 258); width:200px;">설계</th>
+          <th style="border:1px solid #e6e3dc; padding:12px 14px; text-align:left; background:oklch(95% 0.03 258); color:oklch(42% 0.11 258);">이유</th>
+        </tr></thead>
+        <tbody>
+          <tr><td style="border:1px solid #e6e3dc; padding:12px 14px; font-weight:700;">대출 한도 (LTV)</td><td style="border:1px solid #e6e3dc; padding:12px 14px; color:#3f414a;">50%</td><td style="border:1px solid #e6e3dc; padding:12px 14px; color:#5b6470;">가격 하락 완충 → 부실 확률 ↓</td></tr>
+          <tr><td style="border:1px solid #e6e3dc; padding:12px 14px; font-weight:700;">청산 트리거</td><td style="border:1px solid #e6e3dc; padding:12px 14px; color:#3f414a;">담보가치 ≤ 부채</td><td style="border:1px solid #e6e3dc; padding:12px 14px; color:#5b6470;">대출금 미회수 위험을 막는 지점</td></tr>
+          <tr><td style="border:1px solid #e6e3dc; padding:12px 14px; font-weight:700;">청산 주체</td><td style="border:1px solid #e6e3dc; padding:12px 14px; color:#3f414a;">누구나 (청산자)</td><td style="border:1px solid #e6e3dc; padding:12px 14px; color:#5b6470;">탈중앙 인센티브로 신속 처리</td></tr>
+          <tr><td style="border:1px solid #e6e3dc; padding:12px 14px; font-weight:700;">시세 출처</td><td style="border:1px solid #e6e3dc; padding:12px 14px; color:#3f414a;">오라클 (stale 차단)</td><td style="border:1px solid #e6e3dc; padding:12px 14px; color:#5b6470;">잘못된 시세로 부당 청산 방지</td></tr>
+        </tbody>
+      </table>
+
+      <!-- example + timeline -->
+      <div style="font-size:19px; font-weight:800; margin-bottom:16px;">3. 예시 시나리오</div>
+      <div style="background:oklch(96% 0.02 258); border:1px solid oklch(88% 0.04 258); border-radius:14px; padding:24px 28px; margin-bottom:40px;">
+        <div style="font-weight:800; font-size:17px; color:oklch(42% 0.11 258); margin-bottom:14px;">감정가 1억 원 시계를 담보로 대출</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:20px;">
+          <div style="background:#fff; border:1px solid #e6e3dc; border-radius:10px; padding:16px 18px;"><div style="font-size:13px; color:#8a929c; font-weight:700; margin-bottom:4px;">대출</div><div style="font-size:16px;">최대 <b>5,000만 원</b> (LTV 50%)</div></div>
+          <div style="background:#fff; border:1px solid #e6e3dc; border-radius:10px; padding:16px 18px;"><div style="font-size:13px; color:#8a929c; font-weight:700; margin-bottom:4px;">이자</div><div style="font-size:16px;">연 5% → 연 <b>250만 원</b></div></div>
+          <div style="background:#fff; border:1px solid #e6e3dc; border-radius:10px; padding:16px 18px; grid-column:1 / -1;"><div style="font-size:13px; color:#8a929c; font-weight:700; margin-bottom:4px;">청산선</div><div style="font-size:16px;">감정가가 <b>5,000만 원(50%) 이하</b>로 하락하면 청산</div></div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:0;">
+          <div style="display:flex; gap:14px; align-items:flex-start; padding:8px 0 8px 20px; border-left:2px solid oklch(80% 0.05 258); position:relative;"><span style="position:absolute; left:-7px; top:12px; width:12px; height:12px; border-radius:50%; background:oklch(48% 0.11 258);"></span><b style="font-size:15px; width:70px; flex-shrink:0;">0개월</b><span style="font-size:15px; color:#3f414a;">담보 예치, 5,000만 원 대출 (건전)</span></div>
+          <div style="display:flex; gap:14px; align-items:flex-start; padding:8px 0 8px 20px; border-left:2px solid oklch(80% 0.05 258); position:relative;"><span style="position:absolute; left:-7px; top:12px; width:12px; height:12px; border-radius:50%; background:oklch(48% 0.11 258);"></span><b style="font-size:15px; width:70px; flex-shrink:0;">3개월</b><span style="font-size:15px; color:#3f414a;">시세 9,000만 원으로 하락 — 아직 안전 (부채 5,000만 &lt; 담보 9,000만)</span></div>
+          <div style="display:flex; gap:14px; align-items:flex-start; padding:8px 0 8px 20px; border-left:2px solid oklch(80% 0.05 258); position:relative;"><span style="position:absolute; left:-7px; top:12px; width:12px; height:12px; border-radius:50%; background:oklch(52% 0.16 30);"></span><b style="font-size:15px; width:70px; flex-shrink:0;">X시점</b><span style="font-size:15px; color:#3f414a;">시세 4,900만 원으로 급락 → 담보 ≤ 부채 → <b style="color:oklch(48% 0.16 30);">청산 발생</b></span></div>
+        </div>
+      </div>
+
+      <!-- revenue + risk -->
+      <div style="flex:1 1 300px; display:flex; align-items:center; gap:12px; background:#fff; border:1.5px solid oklch(70% 0.11 75); border-radius:12px; padding:18px 22px;">
+        <div style="font-weight:800; color:oklch(52% 0.11 75); font-size:15px; white-space:nowrap;">회사 수익</div>
+        <div style="font-size:15px; color:#3f414a;">대출금에 대한 연 5% 이자</div>
+      </div>
+      <div style="border:1px solid oklch(85% 0.06 30); border-left:4px solid oklch(52% 0.16 30); border-radius:10px; padding:18px 22px; background:oklch(98% 0.01 30); margin-top:16px;">
+        <div style="font-weight:800; font-size:16px; color:oklch(48% 0.16 30); margin-bottom:6px;">⚠ 리스크 — 오라클 · 실물 처분 · 인가</div>
+        <div style="font-size:15px; color:#3f414a; line-height:1.7;">시세 조작/지연 시 부당 대출·청산이 발생할 수 있습니다. 온체인 청산은 토큰을 회수할 뿐이라, 가치 실현을 위해선 <b>실물 시계의 오프체인 매각</b>이 필요해 정합성 설계가 요구됩니다. 대출업 자체도 <b>대부업법·온투법</b> 인가 이슈가 있습니다.</div>
+      </div>
+
+      <!-- components -->
+      <div style="font-size:19px; font-weight:800; margin:40px 0 16px;">4. 관련 컴포넌트</div>
+      <table style="width:100%; border-collapse:collapse; font-size:15px;">
+        <thead><tr>
+          <th style="border:1px solid #e6e3dc; padding:12px 14px; text-align:left; background:oklch(95% 0.03 258); color:oklch(42% 0.11 258); width:200px;">컴포넌트</th>
+          <th style="border:1px solid #e6e3dc; padding:12px 14px; text-align:left; background:oklch(95% 0.03 258); color:oklch(42% 0.11 258);">역할</th>
+          <th style="border:1px solid #e6e3dc; padding:12px 14px; text-align:center; background:oklch(95% 0.03 258); color:oklch(42% 0.11 258); width:110px;">위치</th>
+        </tr></thead>
+        <tbody>
+          <tr><td style="border:1px solid #e6e3dc; padding:12px 14px; font-weight:700;">WatchVault</td><td style="border:1px solid #e6e3dc; padding:12px 14px; color:#3f414a;">담보 예치·대출·이자·청산 로직</td><td style="border:1px solid #e6e3dc; padding:12px 14px; text-align:center; color:oklch(48% 0.13 150); font-weight:700;">온체인</td></tr>
+          <tr><td style="border:1px solid #e6e3dc; padding:12px 14px; font-weight:700;">PriceOracle</td><td style="border:1px solid #e6e3dc; padding:12px 14px; color:#3f414a;">감정가 저장 + 만료(stale) 검증</td><td style="border:1px solid #e6e3dc; padding:12px 14px; text-align:center; color:oklch(48% 0.13 150); font-weight:700;">온체인</td></tr>
+          <tr><td style="border:1px solid #e6e3dc; padding:12px 14px; font-weight:700;">오라클 푸시 서비스</td><td style="border:1px solid #e6e3dc; padding:12px 14px; color:#3f414a;">오프체인 시세를 온체인으로 전송</td><td style="border:1px solid #e6e3dc; padding:12px 14px; text-align:center; color:oklch(45% 0.09 200); font-weight:700;">오프체인</td></tr>
+          <tr><td style="border:1px solid #e6e3dc; padding:12px 14px; font-weight:700;">스테이블코인 (USDC)</td><td style="border:1px solid #e6e3dc; padding:12px 14px; color:#3f414a;">대출·상환 정산 통화</td><td style="border:1px solid #e6e3dc; padding:12px 14px; text-align:center; color:oklch(48% 0.13 150); font-weight:700;">온체인</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+  </div>
+</div>
+
+</x-dc>
+</body>
+</html>
