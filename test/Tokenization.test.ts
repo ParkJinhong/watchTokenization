@@ -67,6 +67,14 @@ describe("토큰화 시장 (WatchShare · Factory · P2PMarket)", () => {
       expect(await token.balanceOf(consignor.address)).to.equal(shares(500));
       expect(await token.issueMethod()).to.equal(2);
     });
+
+    it("같은 이름으로 재발행하면 거부된다 (중복 토큰화 차단)", async () => {
+      const { company, factory } = await loadFixture(deployFixture);
+      await factory.issueCompany("Rolex #1", "wRLX1", 0, "REF-1", shares(1000));
+      await expect(
+        factory.connect(company).issueCompany("Rolex #1", "wRLX1b", 0, "REF-9", shares(500))
+      ).to.be.revertedWith("name already used");
+    });
   });
 
   describe("대여 수수료 배당", () => {

@@ -18,6 +18,7 @@ contract WatchFactory {
 
     address public immutable dividendToken; // USDC
     WatchInfo[] public watches;
+    mapping(bytes32 => bool) public nameTaken; // 이름 중복 방지 (keccak256(name) → 사용됨)
 
     event WatchIssued(address indexed token, uint8 method, uint256 totalShares);
 
@@ -90,6 +91,9 @@ contract WatchFactory {
         uint256[] memory amounts,
         uint256 totalShares
     ) internal returns (address) {
+        bytes32 key = keccak256(bytes(name));
+        require(!nameTaken[key], "name already used"); // 같은 이름(=같은 시계)의 중복 토큰화 차단
+        nameTaken[key] = true;
         WatchShare token = new WatchShare(name, symbol, grade, refId, method, dividendToken, holders, amounts);
         watches.push(WatchInfo(address(token), name, symbol, grade, method, totalShares));
         emit WatchIssued(address(token), uint8(method), totalShares);
