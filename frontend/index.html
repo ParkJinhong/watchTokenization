@@ -3,49 +3,106 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>시계 토큰화 시장 — 테스트 도구</title>
+<title>MAISON — 시계 토큰화 시장</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root{--ink:#1b2026;--muted:#5b6470;--line:#dde3e8;--bg:#eef1f4;--tok:#15616d;--tok-bg:#eef6f7;--ok:#2f7d4f;--warn:#a63a2a;--gold:#b3791a}
+  :root{
+    --ink:#1c1a16; --muted:#8a8474; --faint:#a49d8e; --line:#e7e2d6; --line2:#f0ebdf;
+    --bg:#f3f0e9; --surface:#fff; --field:#fdfcf9;
+    --gold:#a87d2e; --gold-d:#946c22; --gold-soft:rgba(168,125,46,.14);
+    --ok:#2f7d4f; --ok-bg:#e7f0ea; --warn:#a4392a; --warn-bg:#f6e9e6;
+    --sans:'Instrument Sans',-apple-system,"Segoe UI",sans-serif;
+    --serif:'Cormorant Garamond',Georgia,serif;
+    --mono:'IBM Plex Mono',Consolas,monospace;
+  }
   *{box-sizing:border-box}
-  body{font-family:"Malgun Gothic","맑은 고딕",-apple-system,"Segoe UI",sans-serif;color:var(--ink);margin:0;background:var(--bg);line-height:1.5}
-  .bar{background:#0f1b1e;color:#dfe9ea;padding:10px 18px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;position:sticky;top:0;z-index:10}
-  .bar b{color:#fff} .bar select{padding:5px 8px;border-radius:6px;border:1px solid #2a3a3e;background:#16262a;color:#fff}
-  .bar .bal{font-size:12.5px;color:#9fb4b6}
+  body{font-family:var(--sans);color:var(--ink);margin:0;background:var(--bg);line-height:1.5;-webkit-font-smoothing:antialiased}
+  a{color:var(--gold);text-decoration:none} a:hover{color:var(--gold-d)}
+  ::selection{background:rgba(168,125,46,.22)}
+
+  /* ---------- top bar ---------- */
+  .bar{background:#16130f;border-bottom:1px solid #2a2418;color:#e8e2d4;padding:0 26px;height:64px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;position:sticky;top:0;z-index:20}
+  .brand{display:flex;align-items:center;gap:13px;margin-right:6px}
+  .brand .mono{width:34px;height:34px;border-radius:8px;background:linear-gradient(150deg,var(--gold),#7d5a1c);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:700;font-size:20px;color:#faf6ec;box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
+  .brand .wm{display:flex;flex-direction:column;line-height:1.05;font-family:var(--serif);font-size:19px;font-weight:600;color:#f3ecdc;letter-spacing:.01em}
+  .brand .wm small{font-family:var(--sans);font-size:10px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:#8f866f}
+  .blabel{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#7c745e}
+  .bar select{appearance:none;-webkit-appearance:none;background:#241f15;color:#f0e9d8;border:1px solid #3a3221;border-radius:8px;padding:8px 30px 8px 12px;font:500 13px var(--sans);cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23c9bfa4' stroke-width='1.4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center}
+  .bar .bal{font-family:var(--mono);font-size:12.5px;color:#a79c81;background:#221d13;border:1px solid #322a1c;border-radius:7px;padding:6px 10px}
+  #acctBal{background:none;border:none;padding:0;color:#f0e6d0}
   .bar button{margin-left:auto}
-  .wrap{max-width:1080px;margin:0 auto;padding:18px}
-  .tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
-  .tabs button{padding:8px 16px;border:1px solid var(--line);background:#fff;border-radius:8px 8px 0 0;cursor:pointer;font-size:14px;font-weight:700;color:var(--muted)}
-  .tabs button.on{background:var(--tok);color:#fff;border-color:var(--tok)}
-  .panel{display:none} .panel.on{display:block}
-  .card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:16px}
-  .card h3{margin:0 0 12px;font-size:15px;color:var(--tok)}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
-  label{display:block;font-size:12px;color:var(--muted);margin:8px 0 3px}
-  input,select.f{width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:6px;font-size:13.5px}
-  button{padding:8px 14px;border:none;border-radius:7px;background:var(--tok);color:#fff;font-weight:700;cursor:pointer;font-size:13.5px}
-  button.sub{background:#fff;color:var(--tok);border:1px solid var(--tok);padding:4px 10px;font-size:12px}
-  button.warn{background:var(--warn)} button:disabled{opacity:.5;cursor:not-allowed}
-  table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px}
-  th,td{border:1px solid var(--line);padding:6px 8px;text-align:left}
-  th{background:var(--tok-bg);color:var(--tok)}
-  .row2{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+
+  /* ---------- layout ---------- */
+  .wrap{max-width:1140px;margin:0 auto;padding:34px 26px 80px}
+
+  /* ---------- tabs ---------- */
+  .tabs{display:flex;gap:32px;border-bottom:1px solid #e2dccd;margin:0 0 28px;flex-wrap:wrap}
+  .tabs button{background:none;border:none;padding:0 2px 14px;margin-bottom:-1px;font:600 15px var(--sans);color:var(--muted);cursor:pointer;border-bottom:2px solid transparent}
+  .tabs button:hover{color:var(--ink)}
+  .tabs button.on{color:var(--ink);border-bottom-color:var(--gold)}
+  .panel{display:none;animation:fadeUp .35s ease both} .panel.on{display:block}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  /* ---------- cards ---------- */
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px;margin-bottom:20px;box-shadow:0 1px 2px rgba(28,26,22,.04),0 22px 46px -34px rgba(28,26,22,.55)}
+  .card h3{margin:0 0 16px;font-family:var(--serif);font-weight:600;font-size:23px;color:var(--ink);letter-spacing:.005em}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:20px}
+
+  /* ---------- forms ---------- */
+  label{display:block;font:500 10.5px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+  input,select.f{width:100%;padding:10px 12px;border:1px solid #e0dacb;border-radius:9px;font:400 14px var(--sans);color:var(--ink);background:var(--field)}
+  input{font-family:var(--mono);font-size:13.5px}
+  select.f{appearance:none;-webkit-appearance:none;cursor:pointer;padding-right:32px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23a49d8e' stroke-width='1.4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+  input:focus,select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(168,125,46,.12)}
+  input::placeholder{color:#b6afa0}
+
+  /* ---------- buttons ---------- */
+  button{padding:11px 16px;border:none;border-radius:10px;background:var(--gold);color:#fff;font:600 13.5px var(--sans);cursor:pointer;letter-spacing:.01em;transition:background .12s}
+  button:hover{background:var(--gold-d)}
+  button.sell{background:var(--warn)} button.sell:hover{background:#8e3023}
+  button.buy{background:var(--ok)} button.buy:hover{background:#286c44}
+  button.sub{background:#fff;color:var(--gold);border:1px solid #e0d3b2;padding:6px 12px;font-size:12.5px;border-radius:8px}
+  button.sub:hover{background:#fdfaf2}
+  button.warn{background:var(--warn);color:#fff}
+  button.sub.warn{background:#fff;color:var(--warn);border:1px solid #e6c9c2}
+  button.sub.warn:hover{background:#fbf1ef}
+  button.dashed{background:#fff;color:var(--gold);border:1px dashed #d3c7a6;width:100%}
+  button.dashed:hover{background:#fdfaf2;border-color:var(--gold)}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  .bar button.sub{background:transparent;color:var(--gold);border:1px solid #4a3d24;padding:8px 13px}
+  .bar button.sub:hover{background:#221c12;border-color:var(--gold)}
+
+  /* ---------- tables ---------- */
+  table{width:100%;border-collapse:collapse;margin-top:12px}
+  th{text-align:left;font:600 10.5px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--faint);padding:8px 10px;border-bottom:1px solid #ece6d8}
+  td{padding:12px 10px;border-bottom:1px solid #f4f0e6;font-size:13.5px;color:#3a352a;font-variant-numeric:tabular-nums}
+  #watchTable td:nth-child(2),#watchTable td:nth-child(5),#watchTable td:nth-child(6),#watchTable td:last-child,
+  #orderTable td:nth-child(1),#orderTable td:nth-child(4),#orderTable td:nth-child(5),#orderTable td:nth-child(6){font-family:var(--mono);font-size:13px;color:var(--ink)}
+
+  /* ---------- misc ---------- */
+  .row2{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}
   .row2>div{flex:1 1 120px}
-  .mut{font-size:12px;color:var(--muted)}
-  .big{font-size:20px;font-weight:800;color:var(--tok)}
-  #log{font-family:Consolas,monospace;font-size:12px;background:#0f1b1e;color:#cfe3e6;border-radius:8px;padding:10px;height:130px;overflow:auto;white-space:pre-wrap;margin-top:8px}
-  .pill{display:inline-block;font-size:11px;font-weight:700;padding:1px 7px;border-radius:7px}
-  .pill.sell{background:#fdecea;color:var(--warn)} .pill.buy{background:#e6f2ec;color:var(--ok)}
+  .mut{font-size:12.5px;color:var(--muted);line-height:1.5}
+  .big{font-family:var(--serif);font-size:46px;font-weight:600;color:var(--gold);line-height:1;margin:6px 0}
+  #log{font-family:var(--mono);font-size:12.5px;line-height:1.7;background:#16130f;color:#cbbf9f;border-radius:11px;padding:16px 18px;height:150px;overflow:auto;white-space:pre-wrap;margin-top:4px}
+  .pill{display:inline-block;font:600 11.5px var(--sans);padding:3px 11px;border-radius:16px}
+  .pill.sell{background:var(--warn-bg);color:var(--warn)} .pill.buy{background:var(--ok-bg);color:var(--ok)}
 </style>
 </head>
 <body>
 
 <div class="bar">
-  <b>🕒 시계 토큰화 시장</b>
-  <span>계정</span>
+  <div class="brand">
+    <span class="mono">M</span>
+    <span class="wm">MAISON<small>Watch Tokenization</small></span>
+  </div>
+  <span class="blabel">계정</span>
   <select id="acct"></select>
   <span class="bal" id="acctAddr"></span>
   <span class="bal" id="acctBal"></span>
-  <button class="sub" onclick="faucet()">USDC 받기(+10만)</button>
+  <button class="sub" onclick="faucet()">＋ USDC 받기 (10만)</button>
 </div>
 
 <div class="wrap">
@@ -67,8 +124,8 @@
           <div><label>총 지분 수</label><input id="c_total" value="1000"></div>
         </div>
         <label>감정서 번호</label><input id="c_ref" value="APP-2026-0001">
-        <div style="margin-top:10px"><button onclick="issueCompany()">회사 명의로 발행</button></div>
-        <div class="mut" style="margin-top:6px">전량을 현재 계정(회사)에 발행합니다.</div>
+        <div style="margin-top:16px"><button onclick="issueCompany()" style="width:100%">회사 명의로 발행</button></div>
+        <div class="mut" style="margin-top:10px">전량을 현재 계정(회사)에 발행합니다.</div>
       </div>
 
       <div class="card">
@@ -77,8 +134,8 @@
         <label>심볼</label><input id="f_sym" value="wRLX2">
         <label>등급</label><select class="f" id="f_grade"><option>S</option><option>A</option><option>B</option><option>C</option></select>
         <div id="f_rows" style="margin-top:8px"></div>
-        <button class="sub" onclick="addCrowdRow()" style="margin-top:6px">+ 투자자 추가</button>
-        <div style="margin-top:10px"><button onclick="issueCrowdfund()">기여자에게 분배 발행</button></div>
+        <button class="dashed" onclick="addCrowdRow()" style="margin-top:8px">＋ 투자자 추가</button>
+        <div style="margin-top:14px"><button onclick="issueCrowdfund()" style="width:100%">기여자에게 분배 발행</button></div>
       </div>
 
       <div class="card">
@@ -91,7 +148,7 @@
         </div>
         <label>감정서 번호</label><input id="g_ref" value="APP-2026-0003">
         <label>의뢰인(시계 소유자)</label><select class="f" id="g_consignor"></select>
-        <div style="margin-top:10px"><button onclick="issueConsignment()">의뢰인 명의로 발행</button></div>
+        <div style="margin-top:16px"><button onclick="issueConsignment()" style="width:100%">의뢰인 명의로 발행</button></div>
       </div>
     </div>
 
@@ -106,28 +163,28 @@
     <div class="card">
       <h3>거래할 시계 선택</h3>
       <select class="f" id="tradeSel" onchange="refreshTrade()"></select>
-      <div class="mut" id="tradeBal" style="margin-top:8px"></div>
+      <div class="mut" id="tradeBal" style="margin-top:10px"></div>
     </div>
     <div class="grid">
       <div class="card">
-        <h3><span class="pill sell">매도 등록</span></h3>
+        <h3><span class="pill sell">▲ 매도 등록</span></h3>
         <div class="row2">
           <div><label>수량(지분)</label><input id="s_amt" value="100"></div>
           <div><label>토큰당 가격(USDC)</label><input id="s_price" value="10"></div>
         </div>
-        <div style="margin-top:10px"><button onclick="createSell()">매도 주문 등록</button></div>
+        <div style="margin-top:16px"><button class="sell" onclick="createSell()" style="width:100%">매도 주문 등록</button></div>
       </div>
       <div class="card">
-        <h3><span class="pill buy">매수 등록</span></h3>
+        <h3><span class="pill buy">▼ 매수 등록</span></h3>
         <div class="row2">
           <div><label>수량(지분)</label><input id="b_amt" value="50"></div>
           <div><label>토큰당 가격(USDC)</label><input id="b_price" value="10"></div>
         </div>
-        <div style="margin-top:10px"><button onclick="createBuy()">매수 주문 등록</button></div>
+        <div style="margin-top:16px"><button class="buy" onclick="createBuy()" style="width:100%">매수 주문 등록</button></div>
       </div>
     </div>
     <div class="card">
-      <h3>주문장 (Order Book)</h3>
+      <h3>주문장 <span style="font-family:var(--sans);font-size:12px;color:var(--faint);font-weight:500">Order Book</span></h3>
       <table id="orderTable"><thead><tr><th>#</th><th>구분</th><th>등록자</th><th>남은수량</th><th>가격</th><th>총액(USDC)</th><th>액션</th></tr></thead><tbody></tbody></table>
     </div>
   </div>
@@ -143,18 +200,18 @@
         <h3>내 배당</h3>
         <div class="mut">청구 가능 배당</div>
         <div class="big" id="d_claimable">-</div>
-        <div class="mut" id="d_share" style="margin:6px 0"></div>
-        <button onclick="claim()">배당 출금</button>
+        <div class="mut" id="d_share" style="margin:6px 0 14px"></div>
+        <button onclick="claim()" style="width:100%">배당 출금</button>
       </div>
       <div class="card">
-        <h3>대여 수수료 분배 (회사)</h3>
-        <div class="mut">누적 분배 총액: <b id="d_total">-</b> USDC</div>
+        <h3>대여 수수료 분배 <span style="font-family:var(--sans);font-size:12px;color:var(--faint);font-weight:500">회사</span></h3>
+        <div class="mut">누적 분배 총액: <b id="d_total" style="font-family:var(--mono);color:var(--ink)">-</b> USDC</div>
         <label>1회 분배 금액(USDC)</label><input id="d_amt" value="10">
-        <div class="row2" style="margin-top:10px">
-          <div><button onclick="distributeOnce()">지금 1회 분배</button></div>
-          <div><button id="autoBtn" onclick="toggleAuto()">10초마다 자동분배 시작</button></div>
+        <div class="row2" style="margin-top:16px">
+          <div><button onclick="distributeOnce()" style="width:100%">지금 1회 분배</button></div>
+          <div><button id="autoBtn" onclick="toggleAuto()" style="width:100%">10초마다 자동분배 시작</button></div>
         </div>
-        <div class="mut" style="margin-top:6px">현재 계정이 대여 수익을 입금해 전체 보유자에게 분배합니다.</div>
+        <div class="mut" style="margin-top:10px">현재 계정이 대여 수익을 입금해 전체 보유자에게 분배합니다.</div>
       </div>
     </div>
     <div class="card"><h3>로그</h3><div id="log"></div></div>
@@ -254,7 +311,7 @@ async function refreshAccount(){
   document.getElementById("acctAddr").textContent = short(ADDRS[cur]);
   const eth = await provider.getBalance(ADDRS[cur]);
   const u = await C.usdc().balanceOf(ADDRS[cur]);
-  document.getElementById("acctBal").textContent = `USDC ${fU(u)} · ETH ${Number(ethers.formatEther(eth)).toFixed(2)}`;
+  document.getElementById("acctBal").textContent = `◆ ${fU(u)} USDC · ${Number(ethers.formatEther(eth)).toFixed(2)} ETH`;
 }
 async function refreshWatchTable(){
   const tb=document.querySelector("#watchTable tbody"); tb.innerHTML="";
