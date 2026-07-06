@@ -78,7 +78,7 @@
   table{width:100%;border-collapse:collapse;margin-top:12px}
   th{text-align:left;font:600 10.5px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--faint);padding:8px 10px;border-bottom:1px solid #ece6d8}
   td{padding:12px 10px;border-bottom:1px solid #f4f0e6;font-size:13.5px;color:#3a352a;font-variant-numeric:tabular-nums}
-  #watchTable td:nth-child(2),#watchTable td:nth-child(5),#watchTable td:nth-child(6),#watchTable td:last-child,
+  #watchTable td:nth-child(3),#watchTable td:nth-child(6),#watchTable td:nth-child(7),#watchTable td:last-child,
   #orderTable td:nth-child(1),#orderTable td:nth-child(4),#orderTable td:nth-child(5),#orderTable td:nth-child(6){font-family:var(--mono);font-size:13px;color:var(--ink)}
 
   /* ---------- misc ---------- */
@@ -117,22 +117,24 @@
     <div class="grid">
       <div class="card">
         <h3>① 회사 보유분 토큰화</h3>
-        <label>이름</label><input id="c_name" value="Rolex Submariner #1">
-        <label>심볼</label><input id="c_sym" value="wRLX1">
+        <label>이름</label><input id="c_name" value="Rolex Datejust 36 Diamond">
+        <label>심볼</label><input id="c_sym" value="wRLXDJ">
         <div class="row2">
           <div><label>등급</label><select class="f" id="c_grade"><option>S</option><option>A</option><option>B</option><option>C</option></select></div>
           <div><label>총 지분 수</label><input id="c_total" value="1000"></div>
         </div>
         <label>감정서 번호</label><input id="c_ref" value="APP-2026-0001">
+        <label>사진 URL</label><input id="c_img" value="images/1695397_1.jpg">
         <div style="margin-top:16px"><button onclick="issueCompany()" style="width:100%">회사 명의로 발행</button></div>
         <div class="mut" style="margin-top:10px">전량을 현재 계정(회사)에 발행합니다.</div>
       </div>
 
       <div class="card">
         <h3>② 자금 모집 후 분배</h3>
-        <label>이름</label><input id="f_name" value="Rolex Daytona #2">
-        <label>심볼</label><input id="f_sym" value="wRLX2">
+        <label>이름</label><input id="f_name" value="Tudor Black Bay 58 Ice Blue">
+        <label>심볼</label><input id="f_sym" value="wTDRBB">
         <label>등급</label><select class="f" id="f_grade"><option>S</option><option>A</option><option>B</option><option>C</option></select>
+        <label>사진 URL</label><input id="f_img" value="images/1695386_1.jpg">
         <div id="f_rows" style="margin-top:8px"></div>
         <button class="dashed" onclick="addCrowdRow()" style="margin-top:8px">＋ 투자자 추가</button>
         <div style="margin-top:14px"><button onclick="issueCrowdfund()" style="width:100%">기여자에게 분배 발행</button></div>
@@ -140,13 +142,14 @@
 
       <div class="card">
         <h3>③ 토큰화 희망자 중개</h3>
-        <label>이름</label><input id="g_name" value="Omega Speedmaster #3">
-        <label>심볼</label><input id="g_sym" value="wOMG3">
+        <label>이름</label><input id="g_name" value="Hublot Classic Fusion Chrono">
+        <label>심볼</label><input id="g_sym" value="wHBLCF">
         <div class="row2">
           <div><label>등급</label><select class="f" id="g_grade"><option>S</option><option>A</option><option>B</option><option>C</option></select></div>
           <div><label>총 지분 수</label><input id="g_total" value="500"></div>
         </div>
         <label>감정서 번호</label><input id="g_ref" value="APP-2026-0003">
+        <label>사진 URL</label><input id="g_img" value="images/1695373_1.jpg">
         <label>의뢰인(시계 소유자)</label><select class="f" id="g_consignor"></select>
         <div style="margin-top:16px"><button onclick="issueConsignment()" style="width:100%">의뢰인 명의로 발행</button></div>
       </div>
@@ -154,7 +157,7 @@
 
     <div class="card">
       <h3>발행된 시계 토큰</h3>
-      <table id="watchTable"><thead><tr><th>이름</th><th>심볼</th><th>등급</th><th>발행방법</th><th>총지분</th><th>내 보유</th><th>주소</th></tr></thead><tbody></tbody></table>
+      <table id="watchTable"><thead><tr><th>사진</th><th>이름</th><th>심볼</th><th>등급</th><th>발행방법</th><th>총지분</th><th>내 보유</th><th>주소</th></tr></thead><tbody></tbody></table>
     </div>
   </div>
 
@@ -290,17 +293,17 @@ function addCrowdRow(holderIdx){
 }
 async function issueCompany(){
   const g=document.getElementById("c_grade").selectedIndex;
-  await run(C.factory(signer()).issueCompany(c_name.value, c_sym.value, g, c_ref.value, T(c_total.value)), "회사 보유분 발행 완료");
+  await run(C.factory(signer()).issueCompany(c_name.value, c_sym.value, g, c_ref.value, T(c_total.value), c_img.value), "회사 보유분 발행 완료");
 }
 async function issueCrowdfund(){
   const g=document.getElementById("f_grade").selectedIndex;
   const hs=[...document.querySelectorAll(".frow-h")].map(s=>s.value);
   const as=[...document.querySelectorAll(".frow-a")].map(i=>T(i.value));
-  await run(C.factory(signer()).issueCrowdfund(f_name.value, f_sym.value, g, "APP-CF", hs, as), "자금 모집 분배 발행 완료");
+  await run(C.factory(signer()).issueCrowdfund(f_name.value, f_sym.value, g, "APP-CF", hs, as, f_img.value), "자금 모집 분배 발행 완료");
 }
 async function issueConsignment(){
   const g=document.getElementById("g_grade").selectedIndex;
-  await run(C.factory(signer()).issueConsignment(g_name.value, g_sym.value, g, g_ref.value, T(g_total.value), g_consignor.value), "중개 발행 완료");
+  await run(C.factory(signer()).issueConsignment(g_name.value, g_sym.value, g, g_ref.value, T(g_total.value), g_consignor.value, g_img.value), "중개 발행 완료");
 }
 
 // ---------- 데이터 로드 ----------
@@ -317,7 +320,10 @@ async function refreshWatchTable(){
   const tb=document.querySelector("#watchTable tbody"); tb.innerHTML="";
   for(const w of WATCHES){
     const bal = await C.share(w.token).balanceOf(ADDRS[cur]);
-    tb.innerHTML += `<tr><td>${w.name}</td><td>${w.symbol}</td><td>${GRADES[Number(w.grade)]}</td><td>${METHODS[Number(w.method)]}</td><td>${fT(w.totalShares)}</td><td>${fT(bal)}</td><td>${short(w.token)}</td></tr>`;
+    const img = w.imageURI
+      ? `<img src="${w.imageURI}" alt="" style="width:48px;height:48px;object-fit:cover;border-radius:8px;display:block" onerror="this.replaceWith(document.createTextNode('⌚'))">`
+      : `<span style="font-size:22px">⌚</span>`;
+    tb.innerHTML += `<tr><td>${img}</td><td>${w.name}</td><td>${w.symbol}</td><td>${GRADES[Number(w.grade)]}</td><td>${METHODS[Number(w.method)]}</td><td>${fT(w.totalShares)}</td><td>${fT(bal)}</td><td>${short(w.token)}</td></tr>`;
   }
   // 셀렉터 채우기
   const opts = WATCHES.map((w,i)=>`<option value="${w.token}">${w.name} (${w.symbol})</option>`).join("");

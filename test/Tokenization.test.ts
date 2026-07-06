@@ -33,9 +33,10 @@ describe("토큰화 시장 (WatchShare · Factory · P2PMarket)", () => {
   describe("발행 — 3가지 방법", () => {
     it("① 회사 보유분: 전량 회사에 발행", async () => {
       const { company, factory } = await loadFixture(deployFixture);
-      await factory.issueCompany("Rolex #1", "wRLX1", 0, "REF-1", shares(1000));
+      await factory.issueCompany("Rolex #1", "wRLX1", 0, "REF-1", shares(1000), "ipfs://rolex1");
       const list = await factory.allWatches();
       expect(list.length).to.equal(1);
+      expect(list[0].imageURI).to.equal("ipfs://rolex1");
       const token = await attach(list[0].token);
       expect(await token.totalSupply()).to.equal(shares(1000));
       expect(await token.balanceOf(company.address)).to.equal(shares(1000));
@@ -50,7 +51,8 @@ describe("토큰화 시장 (WatchShare · Factory · P2PMarket)", () => {
         1,
         "REF-2",
         [investorA.address, investorB.address],
-        [shares(600), shares(400)]
+        [shares(600), shares(400)],
+        ""
       );
       const list = await factory.allWatches();
       const token = await attach(list[0].token);
@@ -61,7 +63,7 @@ describe("토큰화 시장 (WatchShare · Factory · P2PMarket)", () => {
 
     it("③ 중개: 의뢰인에게 전량 발행", async () => {
       const { consignor, factory } = await loadFixture(deployFixture);
-      await factory.issueConsignment("Omega #1", "wOMG1", 2, "REF-3", shares(500), consignor.address);
+      await factory.issueConsignment("Omega #1", "wOMG1", 2, "REF-3", shares(500), consignor.address, "");
       const list = await factory.allWatches();
       const token = await attach(list[0].token);
       expect(await token.balanceOf(consignor.address)).to.equal(shares(500));
@@ -70,9 +72,9 @@ describe("토큰화 시장 (WatchShare · Factory · P2PMarket)", () => {
 
     it("같은 이름으로 재발행하면 거부된다 (중복 토큰화 차단)", async () => {
       const { company, factory } = await loadFixture(deployFixture);
-      await factory.issueCompany("Rolex #1", "wRLX1", 0, "REF-1", shares(1000));
+      await factory.issueCompany("Rolex #1", "wRLX1", 0, "REF-1", shares(1000), "ipfs://rolex1");
       await expect(
-        factory.connect(company).issueCompany("Rolex #1", "wRLX1b", 0, "REF-9", shares(500))
+        factory.connect(company).issueCompany("Rolex #1", "wRLX1b", 0, "REF-9", shares(500), "")
       ).to.be.revertedWith("name already used");
     });
   });
@@ -86,7 +88,8 @@ describe("토큰화 시장 (WatchShare · Factory · P2PMarket)", () => {
         0,
         "REF-4",
         [investorA.address, investorB.address],
-        [shares(700), shares(300)]
+        [shares(700), shares(300)],
+        ""
       );
       const token = await attach((await factory.allWatches())[0].token);
 
@@ -106,7 +109,7 @@ describe("토큰화 시장 (WatchShare · Factory · P2PMarket)", () => {
 
     it("거래로 토큰이 이동해도 배당 지분이 정확히 따라간다", async () => {
       const { company, investorA, factory, usdcToken } = await loadFixture(deployFixture);
-      await factory.issueCompany("Rolex #4", "wRLX4", 0, "REF-5", shares(1000));
+      await factory.issueCompany("Rolex #4", "wRLX4", 0, "REF-5", shares(1000), "");
       const token = await attach((await factory.allWatches())[0].token);
 
       // 1차 분배: 회사 100% 보유 → 전액 회사 몫
@@ -128,7 +131,7 @@ describe("토큰화 시장 (WatchShare · Factory · P2PMarket)", () => {
   describe("P2P 거래", () => {
     it("매도 등록 → 매수자가 체결(부분 체결 포함)", async () => {
       const { company, investorA, factory, market, usdcToken } = await loadFixture(deployFixture);
-      await factory.issueCompany("Rolex #5", "wRLX5", 0, "REF-6", shares(1000));
+      await factory.issueCompany("Rolex #5", "wRLX5", 0, "REF-6", shares(1000), "");
       const token = await attach((await factory.allWatches())[0].token);
       const mAddr = await market.getAddress();
 
@@ -150,7 +153,7 @@ describe("토큰화 시장 (WatchShare · Factory · P2PMarket)", () => {
 
     it("매수 등록 → 매도자가 체결", async () => {
       const { company, investorA, factory, market, usdcToken } = await loadFixture(deployFixture);
-      await factory.issueCompany("Rolex #6", "wRLX6", 0, "REF-7", shares(1000));
+      await factory.issueCompany("Rolex #6", "wRLX6", 0, "REF-7", shares(1000), "");
       const token = await attach((await factory.allWatches())[0].token);
       const mAddr = await market.getAddress();
 
@@ -171,7 +174,7 @@ describe("토큰화 시장 (WatchShare · Factory · P2PMarket)", () => {
 
     it("매도 주문 취소 시 토큰이 환불된다", async () => {
       const { company, factory, market } = await loadFixture(deployFixture);
-      await factory.issueCompany("Rolex #7", "wRLX7", 0, "REF-8", shares(1000));
+      await factory.issueCompany("Rolex #7", "wRLX7", 0, "REF-8", shares(1000), "");
       const token = await attach((await factory.allWatches())[0].token);
       const mAddr = await market.getAddress();
 
